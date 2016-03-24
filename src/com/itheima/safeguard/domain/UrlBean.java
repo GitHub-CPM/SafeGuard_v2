@@ -3,13 +3,13 @@ package com.itheima.safeguard.domain;
 /**
  * @author CPM
  * 
- *         ÕâÊÇÓÃÒÔ·â×°ÍøÂç½âÎöµ½µÄJsonÄÚÈİµÄ±ê×¼Àà
+ *         è¿™æ˜¯ç”¨ä»¥å°è£…ç½‘ç»œè§£æåˆ°çš„Jsonå†…å®¹çš„æ ‡å‡†ç±»
  */
 public class UrlBean {
 
-	private int version; // appµÄ°æ±¾ĞÅÏ¢
-	private String apkUrl; // ¸üĞÂ×îĞÂ°æ±¾appµÄÍøÂçµØÖ·
-	private String desc; // ĞÂ°æ±¾appµÄÃèÊöĞÅÏ¢
+	private int version; // appçš„ç‰ˆæœ¬ä¿¡æ¯
+	private String apkUrl; // æ›´æ–°æœ€æ–°ç‰ˆæœ¬appçš„ç½‘ç»œåœ°å€
+	private String desc; // æ–°ç‰ˆæœ¬appçš„æè¿°ä¿¡æ¯
 
 	public int getVersion() {
 		return version;

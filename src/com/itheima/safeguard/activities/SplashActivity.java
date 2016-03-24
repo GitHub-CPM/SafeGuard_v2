@@ -1,6 +1,7 @@
 package com.itheima.safeguard.activities;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,11 +14,13 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,39 +38,43 @@ import android.widget.Toast;
 
 import com.itheima.safeguard.R;
 import com.itheima.safeguard.domain.UrlBean;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
 
 /**
  * @author CPM
  * 
- *         ÊÖ»úÎÀÊ¿µÄsplash½çÃæ
+ *         æ‰‹æœºå«å£«çš„splashç•Œé¢
  */
 public class SplashActivity extends ActionBarActivity {
 
-	private static final long ANIMATION_TIMES = 3000L; // loadingÊ±ºòµÄ¶¯»­²¥·ÅÊ±¼äÉèÖÃÎª3Ãë
-	private static final int LOADMAIN = 1; // ½øÈëÖ÷½çÃæ
-	private static final int SHOWUPDATEDIALOG = 2; // ÏÔÊ¾¸üĞÂµÄ¶Ô»°¿ò
+	private static final long ANIMATION_TIMES = 3000L; // loadingæ—¶å€™çš„åŠ¨ç”»æ’­æ”¾æ—¶é—´è®¾ç½®ä¸º3ç§’
+	private static final int LOADMAIN = 1; // è¿›å…¥ä¸»ç•Œé¢
+	private static final int SHOWUPDATEDIALOG = 2; // æ˜¾ç¤ºæ›´æ–°çš„å¯¹è¯æ¡†
 	
-	private UrlBean parseJson;// ·â×°ÁËÍøÂç×îĞÂÓ¦ÓÃµÄ°æ±¾ĞÅÏ¢µÄbean
-	private RelativeLayout rl_root; // ¶¯»­µÄlayout
-	private String urlPath_version = "http://10.0.2.2:8080/safeguard_version.json"; // ¿ªÆôÓ¦ÓÃÊ±,¼ì²éappÓ¦ÓÃ°æ±¾Çé¿öµÄÍøÂçµØÖ·
-	private int versionCode; // ±¾appµÄ°æ±¾ºÅ
+	private UrlBean parseJson;// å°è£…äº†ç½‘ç»œæœ€æ–°åº”ç”¨çš„ç‰ˆæœ¬ä¿¡æ¯çš„bean
+	private RelativeLayout rl_root; // åŠ¨ç”»çš„layout
+	private String urlPath_version = "http://10.0.2.2:8080/safeguard_version.json"; // å¼€å¯åº”ç”¨æ—¶,æ£€æŸ¥appåº”ç”¨ç‰ˆæœ¬æƒ…å†µçš„ç½‘ç»œåœ°å€
+	private int versionCode; // æœ¬appçš„ç‰ˆæœ¬å·
 
-	private long startTimeMillis; // ¿ªÊ¼·ÃÎÊÍøÂçµÄÊ±¼ä
+	private long startTimeMillis; // å¼€å§‹è®¿é—®ç½‘ç»œçš„æ—¶é—´
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initView(); // ³õÊ¼»¯½çÃæ
-		initData(); // ³õÊ¼»¯Êı¾İ,»ñµÃ±¾app±¾ÉíµÄ°æ±¾ĞÅÏ¢
-		initAnimation(); // ³õÊ¼»¯¶¯»­
-		checkVersion(); // ·ÃÎÊÍøÂç,¼ì²éappµÄ°æ±¾,Èç¹ûÓĞ×îĞÂµÄ,ÔòÓÃÒÔ¸üĞÂapp
+		initView(); // åˆå§‹åŒ–ç•Œé¢
+		initData(); // åˆå§‹åŒ–æ•°æ®,è·å¾—æœ¬appæœ¬èº«çš„ç‰ˆæœ¬ä¿¡æ¯
+		initAnimation(); // åˆå§‹åŒ–åŠ¨ç”»
+		checkVersion(); // è®¿é—®ç½‘ç»œ,æ£€æŸ¥appçš„ç‰ˆæœ¬,å¦‚æœæœ‰æœ€æ–°çš„,åˆ™ç”¨ä»¥æ›´æ–°app
 	}
 
 	/**
-	 * ³õÊ¼»¯Êı¾İ,»ñµÃapp±¾ÉíµÄ°æ±¾ĞÅÏ¢,ÓÃÒÔ±È¶Ô¸üĞÂapp
+	 * åˆå§‹åŒ–æ•°æ®,è·å¾—appæœ¬èº«çš„ç‰ˆæœ¬ä¿¡æ¯,ç”¨ä»¥æ¯”å¯¹æ›´æ–°app
 	 */
 	private void initData() {
-		// »ñµÃ°ü¹ÜÀíÕß,È¡µÃ°üµÄÏà¹ØĞÅÏ¢,ÄÃµ½±¾appµÄ°æ±¾ºÅ
+		// è·å¾—åŒ…ç®¡ç†è€…,å–å¾—åŒ…çš„ç›¸å…³ä¿¡æ¯,æ‹¿åˆ°æœ¬appçš„ç‰ˆæœ¬å·
 		PackageManager pm = getPackageManager();
 		try {
 			PackageInfo packageInfo = pm.getPackageInfo(getPackageName(), 0);
@@ -78,36 +85,39 @@ public class SplashActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * ·ÃÎÊ·şÎñÆ÷,¼ì²éapp°æ±¾ÊÇ·ñÓĞ¸üĞÂ
+	 * è®¿é—®æœåŠ¡å™¨,æ£€æŸ¥appç‰ˆæœ¬æ˜¯å¦æœ‰æ›´æ–°
 	 */
 	private void checkVersion() {
-		// ´´½¨×ÓÏß³Ì,½«·ÃÎÊÍøÂçµÄºÄÊ±²Ù×÷·ÅÔÚ×ÓÏß³ÌÉÏ²Ù×÷
+		// åˆ›å»ºå­çº¿ç¨‹,å°†è®¿é—®ç½‘ç»œçš„è€—æ—¶æ“ä½œæ”¾åœ¨å­çº¿ç¨‹ä¸Šæ“ä½œ
 		new Thread(new Runnable() {
+
+			private HttpURLConnection conn;
+			private BufferedReader br;
 
 			@Override
 			public void run() {
 				try {
-					// »ñµÃ¿ªÊ¼·ÃÎÊÍøÂç¸üĞÂµÄ¿ªÊ¼Ê±¼ä
+					// è·å¾—å¼€å§‹è®¿é—®ç½‘ç»œæ›´æ–°çš„å¼€å§‹æ—¶é—´
 					startTimeMillis = System.currentTimeMillis();
 					
-					// ·ÃÎÊ°æ±¾¸üĞÂµÄÍøÖ·,ÉèÖÃÁ¬½Ó/¶ÁÈ¡×ÊÔ´³¬Ê±¾ùÎª5Ãë
-					// ÇëÇó·½Ê½ÎªGET,½¨Á¢Á¬½Ó
+					// è®¿é—®ç‰ˆæœ¬æ›´æ–°çš„ç½‘å€,è®¾ç½®è¿æ¥/è¯»å–èµ„æºè¶…æ—¶å‡ä¸º5ç§’
+					// è¯·æ±‚æ–¹å¼ä¸ºGET,å»ºç«‹è¿æ¥
 					URL url = new URL(urlPath_version);
-					HttpURLConnection conn = (HttpURLConnection) url
+					conn = (HttpURLConnection) url
 							.openConnection();
 					conn.setReadTimeout(5000);
 					conn.setConnectTimeout(5000);
 					conn.setRequestMethod("GET");
 					int responseCode = conn.getResponseCode();
 
-					// Èç¹û×´Ì¬ÂëÎª200,Ôò·ÃÎÊ³É¹¦
+					// å¦‚æœçŠ¶æ€ç ä¸º200,åˆ™è®¿é—®æˆåŠŸ
 					if (responseCode == 200) {
-						// ½¨Á¢Á¬½Ó,¶ÁÈ¡·şÎñÆ÷¶ËµÄÊı¾İµ½±¾µØ
-						// ²¢½«Êı¾İ´æ´¢
+						// å»ºç«‹è¿æ¥,è¯»å–æœåŠ¡å™¨ç«¯çš„æ•°æ®åˆ°æœ¬åœ°
+						// å¹¶å°†æ•°æ®å­˜å‚¨
 						InputStream is = conn.getInputStream();
-						BufferedReader br = new BufferedReader(
+						br = new BufferedReader(
 								new InputStreamReader(is));
-						// µÚÒ»´ÎÔÚÕâÀïÍüÁËnew¶ÔÏóÁË.
+						// ç¬¬ä¸€æ¬¡åœ¨è¿™é‡Œå¿˜äº†newå¯¹è±¡äº†.
 						StringBuilder jsonData = new StringBuilder();
 						String line = br.readLine();
 						while (line != null) {
@@ -116,26 +126,31 @@ public class SplashActivity extends ActionBarActivity {
 						}
 
 						parseJson = parseJson(jsonData);
-						System.out.println(parseJson.getVersion() + "°æ±¾ºÅ");
 
-						// µ÷ÓÃ·½·¨,²é¿´ÊÇ·ñ´æÔÚ×îĞÂapp°æ±¾
-
-						isNewVersion(parseJson);
-
-						// ¹ØÁ÷,¹ØÁ¬½Ó
-						br.close();
-						conn.disconnect();
-
-					} else { // Èç¹û·ÃÎÊÊ§°Ü,Ôòµ¯³öÍÂË¾ÌáĞÑÓÃ»§°æ±¾¸üĞÂÊ§°Ü.
-						Toast.makeText(SplashActivity.this, "ÍøÂç·ÃÎÊÊ§°Ü,°æ±¾¸üĞÂÊ§°Ü.",
+					} else { // å¦‚æœè®¿é—®å¤±è´¥,åˆ™å¼¹å‡ºåå¸æé†’ç”¨æˆ·ç‰ˆæœ¬æ›´æ–°å¤±è´¥.
+						Toast.makeText(SplashActivity.this, "ç½‘ç»œè®¿é—®å¤±è´¥,ç‰ˆæœ¬æ›´æ–°å¤±è´¥.",
 								Toast.LENGTH_SHORT).show();
 					}
 
-					// ×¥È¡Òì³£ĞÅÏ¢
+					// æŠ“å–å¼‚å¸¸ä¿¡æ¯,ç»Ÿä¸€å‘æ¶ˆæ¯åˆ°hanlder,ä»¥åå¸çš„å½¢å¼å¼¹å‡º
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
+				} finally {
+					// æœ€åå¿…é¡»è¦æ‰§è¡Œçš„æ“ä½œ
+
+					// è°ƒç”¨æ–¹æ³•,æŸ¥çœ‹æ˜¯å¦å­˜åœ¨æœ€æ–°appç‰ˆæœ¬
+					isNewVersion(parseJson);
+					
+					try {
+						// å…³æµ,å…³è¿æ¥
+						br.close();
+						conn.disconnect();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
 				}
 			}
 
@@ -143,16 +158,20 @@ public class SplashActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * ´´½¨Handler¶ÔÏó,ÓÃÒÔ´¦Àí×ÓÏß³ÌÓëÖ÷Ïß³Ì½øĞĞ½»»¥
+	 * åˆ›å»ºHandlerå¯¹è±¡,ç”¨ä»¥å¤„ç†å­çº¿ç¨‹ä¸ä¸»çº¿ç¨‹è¿›è¡Œäº¤äº’
 	 */
 	Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case LOADMAIN: // ½øÈëÖ÷½çÃæ
+			case LOADMAIN: // è¿›å…¥ä¸»ç•Œé¢
 				Intent intent = new Intent(SplashActivity.this, HomeActivities.class);
 				startActivity(intent);
+				
+				// å»åˆ°ä¸»ç•Œé¢ä¹‹å,æŠŠå½“å‰çš„SplashActivityç•Œé¢ç»™finish()
+				finish();
+				
 				break;
-			case SHOWUPDATEDIALOG: // ½øÈëÖ÷½çÃæ
+			case SHOWUPDATEDIALOG: // è¿›å…¥ä¸»ç•Œé¢
 				showUpdateDialog();
 				break;
 			default:
@@ -162,24 +181,24 @@ public class SplashActivity extends ActionBarActivity {
 	};
 
 	/**
-	 * ¶Ô±È±¾app°æ±¾ºÅÓëÍøÂç×îĞÂµÄ°æ±¾ºÅ,ÊÇ·ñÓĞ×îĞÂµÄ°æ±¾
+	 * å¯¹æ¯”æœ¬appç‰ˆæœ¬å·ä¸ç½‘ç»œæœ€æ–°çš„ç‰ˆæœ¬å·,æ˜¯å¦æœ‰æœ€æ–°çš„ç‰ˆæœ¬
 	 * 
 	 * @param parseJson
 	 */
 	protected void isNewVersion(UrlBean parseJson) {
 		int versionNetCode = parseJson.getVersion();
 		
-		// »ñµÃµ¯³ö¶Ô»°¿òÇ°µÄÊ±¼ä
+		// è·å¾—å¼¹å‡ºå¯¹è¯æ¡†å‰çš„æ—¶é—´
 		long endTimeMillis = System.currentTimeMillis();
 		if (endTimeMillis - startTimeMillis < 3000) {
 			SystemClock.sleep(3000 - (endTimeMillis - startTimeMillis));
 		}
 		
 		if (versionNetCode == versionCode) {
-			// °æ±¾ºÅÒ»ÖÂ,²»ĞèÒª¸üĞÂ,Ö±½Ó½øÈëÖ÷½çÃæ
+			// ç‰ˆæœ¬å·ä¸€è‡´,ä¸éœ€è¦æ›´æ–°,ç›´æ¥è¿›å…¥ä¸»ç•Œé¢
 			loadMainActivity();
 		} else {
-			// °æ±¾ºÅ²»Ò»ÖÂ,ĞèÒªµ¯³ö¶Ô»°¿ò,ÌáÊ¾ÓÃ»§¸üĞÂapk²Ù×÷
+			// ç‰ˆæœ¬å·ä¸ä¸€è‡´,éœ€è¦å¼¹å‡ºå¯¹è¯æ¡†,æç¤ºç”¨æˆ·æ›´æ–°apkæ“ä½œ
 			Message msg = Message.obtain();
 			msg.what = SHOWUPDATEDIALOG;
 			handler.sendMessage(msg);
@@ -187,7 +206,61 @@ public class SplashActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * ½øÈëÖ÷½çÃæ
+	 * ä¸‹è½½æœ€æ–°ç‰ˆæœ¬çš„apk
+	 */
+	private void downLoadNewApk() {
+		// å¯¼å…¥Xutilsåº“,è°ƒç”¨ç›¸å…³æ–¹æ³•
+		HttpUtils utils = new HttpUtils();
+		
+		// ä¸‹è½½æ–°ç‰ˆæœ¬apk
+		utils.download(parseJson.getApkUrl(), "/mnt/sdcard/SG.apk", new RequestCallBack<File>() {
+			
+			@Override
+			public void onSuccess(ResponseInfo<File> arg0) {
+				// ä¸‹è½½apkæˆåŠŸ
+				Toast.makeText(getApplicationContext(), "ä¸‹è½½apkæˆåŠŸ!", Toast.LENGTH_LONG).show();
+				
+				// å®‰è£…ä¸‹è½½å®Œæˆçš„apk
+				installApk();
+			}
+
+			@Override
+			public void onFailure(HttpException arg0, String arg1) {
+				// ä¸‹è½½apkå¤±è´¥
+				Toast.makeText(getApplicationContext(), "ä¸‹è½½apkå¤±è´¥.", Toast.LENGTH_LONG).show();
+			}
+			
+		});
+	}
+	
+	/**
+	 * å®‰è£…ä¸‹è½½å®Œæˆçš„æœ€æ–°çš„apk
+	 */
+	private void installApk() {
+		// ä½¿ç”¨æ„å›¾å»å®‰è£…ä¸‹è½½å¥½çš„apkå®‰è£…åŒ…
+		Intent intent = new Intent("android.intent.action.VIEW");
+		intent.addCategory("android.intent.category.DEFAULT");
+		Uri data = Uri.fromFile(new File("/mnt/sdcard/SG.apk"));
+		String type = "application/vnd.android.package-archive";
+		intent.setDataAndType(data, type);
+		
+		// å¼€å¯å®‰è£…apkçš„æ´»åŠ¨.
+		// å¦‚æœç”¨æˆ·åœ¨å®‰è£…çš„è¿‡ç¨‹å½“ä¸­,å–æ¶ˆäº†å®‰è£…,åˆ™åº”è¯¥ä½¿ç”¨ä¸€ä¸ªç»“æœçš„è¿”å›,åœ¨è¿”å›ç»“æœé‡Œè¿›å…¥ä¸»ç•Œé¢
+		// è¿™é‡Œéœ€è¦é‡å†™onActivityResult()çš„æ–¹æ³•
+		startActivityForResult(intent,0);
+	}
+	
+	/* 
+	 * å¦‚æœç”¨æˆ·åœ¨å®‰è£…è¿‡ç¨‹å½“ä¸­å–æ¶ˆäº†apkçš„å®‰è£…,åˆ™éœ€è¦è®©ç•Œé¢å›åˆ°ä¸»ç•Œé¢
+	 */
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		loadMainActivity();
+		super.onActivityResult(arg0, arg1, arg2);
+	}
+
+	/**
+	 * è¿›å…¥ä¸»ç•Œé¢
 	 */
 	private void loadMainActivity() {
 		Message msg = Message.obtain();
@@ -196,58 +269,67 @@ public class SplashActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * Ó¦ÓÃ°æ±¾ºÅÓëÍøÂç×îĞÂ°æ±¾ºÅ²»Ò»ÖÂ,µ¯³öapk¸üĞÂµÄ¶Ô»°¿ò Èç¹û¸üĞÂapk,ÔòXXXXX(ºóÌ¨½øĞĞÏÂÔØ/°²×°) Èç¹û²»¸üĞÂapk,Ôò×ªµ½Ö÷½çÃæÖĞ
+	 * åº”ç”¨ç‰ˆæœ¬å·ä¸ç½‘ç»œæœ€æ–°ç‰ˆæœ¬å·ä¸ä¸€è‡´,å¼¹å‡ºapkæ›´æ–°çš„å¯¹è¯æ¡† å¦‚æœæ›´æ–°apk,åˆ™XXXXX(åå°è¿›è¡Œä¸‹è½½/å®‰è£…) å¦‚æœä¸æ›´æ–°apk,åˆ™è½¬åˆ°ä¸»ç•Œé¢ä¸­
 	 */
 	private void showUpdateDialog() {
 		AlertDialog.Builder updateDialog = new AlertDialog.Builder(this);
+		
+		// å½“ç”¨æˆ·åœ¨å¼¹å‡ºå¯¹è¯æ¡†ä¹‹å,å¹¶æ²¡æœ‰é€‰æ‹©ç‚¹å‡»"æ›´æ–°"æˆ–è€…"ä¸æ›´æ–°",è€Œæ˜¯ç›´æ¥æŒ‰äº†è¿”å›é”®,é‚£ä¹ˆå°±è¦è¿›å…¥åˆ°ä¸»ç•Œé¢å½“ä¸­.
+		updateDialog.setOnCancelListener(new OnCancelListener() {
+			
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				//	ç‚¹è§£äº†è¿”å›é”®è§¦å‘äº†å–æ¶ˆäº‹ä»¶,åˆ™å›åˆ°ä¸»ç•Œé¢
+				loadMainActivity();
+			}
+		});
+		
 		updateDialog
-				.setTitle("ÌáĞÑ")
+				.setTitle("æé†’")
 				.setMessage(
-						"Ç×!Ó¦ÓÃÓĞ×îĞÂµÄ°æ±¾,Çëµã»÷¸üĞÂ»ñµÃ¸üºÃµÄ±£»¤Å¶~¸üĞÂÌØĞÔÈçÏÂ:"
+						"äº²!åº”ç”¨æœ‰æœ€æ–°çš„ç‰ˆæœ¬,è¯·ç‚¹å‡»æ›´æ–°è·å¾—æ›´å¥½çš„ä¿æŠ¤å“¦~æ›´æ–°ç‰¹æ€§å¦‚ä¸‹:"
 								+ parseJson.getDesc())
-				.setPositiveButton("¸üĞÂ", new OnClickListener() {
+				.setPositiveButton("æ›´æ–°", new OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// ½øÈë¸üĞÂµÄÂß¼­
-						// ÏÈÓÃÍÂË¾µ¯Ò»ÏÂ,Ä£Äâ¸üĞÂµÄÇé¿ö
-						Toast.makeText(SplashActivity.this, "ÕıÔÚ¸üĞÂ~~",
-								Toast.LENGTH_LONG).show();
+						// ä¸‹è½½æ–°çš„apk
+						downLoadNewApk();
 					}
-				}).setNegativeButton("ÏÂ´ÎÔÙ¸üĞÂ", new OnClickListener() {
+				}).setNegativeButton("ä¸‹æ¬¡å†æ›´æ–°", new OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// ²»¸üĞÂapk,½øÈëÖ÷½çÃæ
+						// ä¸æ›´æ–°apk,è¿›å…¥ä¸»ç•Œé¢
 						loadMainActivity();
 					}
 				});
-		updateDialog.show();// ÏÔÊ¾¶Ô»°¿ò
+		updateDialog.show();// æ˜¾ç¤ºå¯¹è¯æ¡†
 	}
 
 	/**
-	 * Õâ¸ö·½·¨ÓÃÓÚ¶Ô´«ÈëµÄJsonÊı¾İ²ÎÊı½øĞĞ½âÎö,²¢·µ»ØÒ»¸öUrlBeanÀàµÄÊµÌå¶ÔÏó
+	 * è¿™ä¸ªæ–¹æ³•ç”¨äºå¯¹ä¼ å…¥çš„Jsonæ•°æ®å‚æ•°è¿›è¡Œè§£æ,å¹¶è¿”å›ä¸€ä¸ªUrlBeanç±»çš„å®ä½“å¯¹è±¡
 	 * 
 	 * @param jsonData
-	 *            ÕâÊÇ´øÓĞJsonÊı¾İµÄ²ÎÊı
+	 *            è¿™æ˜¯å¸¦æœ‰Jsonæ•°æ®çš„å‚æ•°
 	 */
 	private UrlBean parseJson(StringBuilder jsonData) {
-		// ´´½¨UrlBean¶ÔÏó,ÓÃÒÔ·â×°½âÎö³öÀ´µÄJsonÄÚÈİ
+		// åˆ›å»ºUrlBeanå¯¹è±¡,ç”¨ä»¥å°è£…è§£æå‡ºæ¥çš„Jsonå†…å®¹
 		UrlBean urlBean = new UrlBean();
 
 		try {
-			// ¿ªÊ¼½âÎöjsonÄÚÈİ
+			// å¼€å§‹è§£æjsonå†…å®¹
 			JSONObject jsonObject = new JSONObject(jsonData + "");
 			int version = jsonObject.getInt("version");
 			String apkUrl = jsonObject.getString("url");
 			String desc = jsonObject.getString("desc");
 
-			// ½«¶ÁÈ¡µ½ĞÅÏ¢·â×°µ½urlBeanÖĞ
+			// å°†è¯»å–åˆ°ä¿¡æ¯å°è£…åˆ°urlBeanä¸­
 			urlBean.setVersion(version);
 			urlBean.setApkUrl(apkUrl);
 			urlBean.setDesc(desc);
 
-			// ²¶»ñ²¢´¦ÀíÒì³£
+			// æ•è·å¹¶å¤„ç†å¼‚å¸¸
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -255,51 +337,51 @@ public class SplashActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * ½çÃæ×é¼şµÄ³õÊ¼»¯
+	 * ç•Œé¢ç»„ä»¶çš„åˆå§‹åŒ–
 	 */
 	private void initView() {
 		setContentView(R.layout.activity_splash);
 
-		// »ñµÃ¶Ô¸ù×é¼ş¶ÔÏóµÄÒıÓÃ,ÓÃÒÔÉèÖÃ¶¯»­Ğ§¹û
+		// è·å¾—å¯¹æ ¹ç»„ä»¶å¯¹è±¡çš„å¼•ç”¨,ç”¨ä»¥è®¾ç½®åŠ¨ç”»æ•ˆæœ
 		rl_root = (RelativeLayout) findViewById(R.id.rl_splash_root);
 	}
 
 	/**
-	 * ¶¯»­µÄ³õÊ¼»¯
+	 * åŠ¨ç”»çš„åˆå§‹åŒ–
 	 */
 	private void initAnimation() {
-		// 1.½¥±ä¶¯»­
-		// ´´½¨½¥±ä¶¯»­¶ÔÏó,´Ó0.0µ½1.0µÄ±ä»¯,Ò²¾ÍÊÇ´ÓÍêÈ«Í¸Ã÷µ½ÍêÈ«ÏÔÊ¾×´Ì¬
-		// ÉèÖÃ½¥±ä¶¯»­µÄ³ÖĞøÊ±¼ä
-		// ÈÃ¸Ã¶¯»­²¥·ÅÍê³ÉºóµÄ×´Ì¬Í£ÁôÔÚ½áÊøÊ±ºòµÄÑùÊ½
+		// 1.æ¸å˜åŠ¨ç”»
+		// åˆ›å»ºæ¸å˜åŠ¨ç”»å¯¹è±¡,ä»0.0åˆ°1.0çš„å˜åŒ–,ä¹Ÿå°±æ˜¯ä»å®Œå…¨é€æ˜åˆ°å®Œå…¨æ˜¾ç¤ºçŠ¶æ€
+		// è®¾ç½®æ¸å˜åŠ¨ç”»çš„æŒç»­æ—¶é—´
+		// è®©è¯¥åŠ¨ç”»æ’­æ”¾å®Œæˆåçš„çŠ¶æ€åœç•™åœ¨ç»“æŸæ—¶å€™çš„æ ·å¼
 		AlphaAnimation aa = new AlphaAnimation(0.0F, 1.0F);
 		aa.setDuration(ANIMATION_TIMES);
 		aa.setFillAfter(true);
 
-		// 2.Ğı×ª¶¯»­
-		// ´´½¨Ğı×ª¶¯»­,ÈÃ×é¼ş±¾ÉíÖĞĞÄµã(Ãªµã)×ÔĞĞË³Ê±ÕëĞı×ª
+		// 2.æ—‹è½¬åŠ¨ç”»
+		// åˆ›å»ºæ—‹è½¬åŠ¨ç”»,è®©ç»„ä»¶æœ¬èº«ä¸­å¿ƒç‚¹(é”šç‚¹)è‡ªè¡Œé¡ºæ—¶é’ˆæ—‹è½¬
 		RotateAnimation ra = new RotateAnimation(0.0F, 360F,
 				Animation.RELATIVE_TO_SELF, 0.5F, Animation.RELATIVE_TO_SELF,
 				0.5F);
 		ra.setDuration(ANIMATION_TIMES);
 		ra.setFillAfter(true);
 
-		// 3.Ëõ·Å¶¯»­
-		// ´´½¨Ëõ·Å¶¯»­,´Ó×ÔÉíµÄÖĞĞÄµã¿ªÊ¼,´ÓĞ¡µ½´óÖğ½¥ÏÔÊ¾
+		// 3.ç¼©æ”¾åŠ¨ç”»
+		// åˆ›å»ºç¼©æ”¾åŠ¨ç”»,ä»è‡ªèº«çš„ä¸­å¿ƒç‚¹å¼€å§‹,ä»å°åˆ°å¤§é€æ¸æ˜¾ç¤º
 		ScaleAnimation sa = new ScaleAnimation(0.0F, 1.0F, 0.0F, 1.0F,
 				Animation.RELATIVE_TO_SELF, 0.5F, Animation.RELATIVE_TO_SELF,
 				0.5F);
 		sa.setDuration(ANIMATION_TIMES);
 		sa.setFillAfter(true);
 
-		// 4.×éºÏ¶¯»­
-		// ´´½¨×éºÏ¶¯»­,½«ÒÔÉÏÈıÖÖ¶¯»­ĞÎÊ½½áºÏÔÚÒ»Æğ
+		// 4.ç»„åˆåŠ¨ç”»
+		// åˆ›å»ºç»„åˆåŠ¨ç”»,å°†ä»¥ä¸Šä¸‰ç§åŠ¨ç”»å½¢å¼ç»“åˆåœ¨ä¸€èµ·
 		AnimationSet as = new AnimationSet(true);
 		as.addAnimation(aa);
 		as.addAnimation(ra);
 		as.addAnimation(sa);
 
-		// ÈÃsplash½çÃæµÄ¸ù×é¼şÆô¶¯ÒÑ¾­ÉèÖÃÁËµÄ½¥±ä¶¯»­Ğ§¹û
+		// è®©splashç•Œé¢çš„æ ¹ç»„ä»¶å¯åŠ¨å·²ç»è®¾ç½®äº†çš„æ¸å˜åŠ¨ç”»æ•ˆæœ
 		rl_root.startAnimation(as);
 	}
 

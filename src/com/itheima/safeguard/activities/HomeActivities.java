@@ -8,18 +8,18 @@ import android.os.Bundle;
 /**
  * @author CPM
  * 
- *         ÕâÊÇÖ÷½çÃæ
+ *         è¿™æ˜¯ä¸»ç•Œé¢
  */
 public class HomeActivities extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initView(); // ³õÊ¼»¯½çÃæ
+		initView(); // åˆå§‹åŒ–ç•Œé¢
 	}
 
 	/**
-	 * ÔÚ´Ë·½·¨ÖĞ½øĞĞ³õÊ¼»¯½çÃæµÄ²Ù×÷
+	 * åœ¨æ­¤æ–¹æ³•ä¸­è¿›è¡Œåˆå§‹åŒ–ç•Œé¢çš„æ“ä½œ
 	 */
 	private void initView() {
 		setContentView(R.layout.activity_home);
