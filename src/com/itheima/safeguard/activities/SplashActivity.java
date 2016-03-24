@@ -4,10 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +58,7 @@ public class SplashActivity extends ActionBarActivity {
 					// 访问版本更新的网址,设置连接/读取资源超时均为5秒
 					// 请求方式为GET,建立连接
 					URL url = new URL(urlPath_version);
-					HttpsURLConnection conn = (HttpsURLConnection) url
+					HttpURLConnection conn = (HttpURLConnection) url
 							.openConnection();
 					conn.setReadTimeout(5000);
 					conn.setConnectTimeout(5000);
@@ -73,14 +72,19 @@ public class SplashActivity extends ActionBarActivity {
 						InputStream is = conn.getInputStream();
 						BufferedReader br = new BufferedReader(
 								new InputStreamReader(is));
-						StringBuilder jsonData = null;
-						String line = null;
-						while ((line = br.readLine()) != null) {
+						StringBuilder jsonData = new StringBuilder();
+						String line = br.readLine();
+						while (line!= null) {
 							jsonData.append(line);
+							line = br.readLine();
 						}
 
 						// 解析Json数据,并返回一个封装了Json数据的实体对象
 						UrlBean parseJson = parseJson(jsonData);
+						System.out.println(parseJson.toString());
+						// 关流,关连接
+						br.close();
+						conn.disconnect();
 
 					} else { // 如果访问失败,则弹出吐司提醒用户版本更新失败.
 						Toast.makeText(SplashActivity.this, "网络访问失败,版本更新失败.",
