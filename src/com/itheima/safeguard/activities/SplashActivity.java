@@ -28,11 +28,13 @@ import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -53,9 +55,10 @@ public class SplashActivity extends ActionBarActivity {
 	private static final long ANIMATION_TIMES = 3000L; // loading时候的动画播放时间设置为3秒
 	private static final int LOADMAIN = 1; // 进入主界面
 	private static final int SHOWUPDATEDIALOG = 2; // 显示更新的对话框
-	
+
 	private UrlBean parseJson;// 封装了网络最新应用的版本信息的bean
 	private RelativeLayout rl_root; // 动画的layout
+	private ProgressBar pb_donwloadproProgress; // 下载更新apk的进度条
 	private String urlPath_version = "http://10.0.2.2:8080/safeguard_version.json"; // 开启应用时,检查app应用版本情况的网络地址
 	private int versionCode; // 本app的版本号
 
@@ -99,12 +102,11 @@ public class SplashActivity extends ActionBarActivity {
 				try {
 					// 获得开始访问网络更新的开始时间
 					startTimeMillis = System.currentTimeMillis();
-					
+
 					// 访问版本更新的网址,设置连接/读取资源超时均为5秒
 					// 请求方式为GET,建立连接
 					URL url = new URL(urlPath_version);
-					conn = (HttpURLConnection) url
-							.openConnection();
+					conn = (HttpURLConnection) url.openConnection();
 					conn.setReadTimeout(5000);
 					conn.setConnectTimeout(5000);
 					conn.setRequestMethod("GET");
@@ -115,8 +117,7 @@ public class SplashActivity extends ActionBarActivity {
 						// 建立连接,读取服务器端的数据到本地
 						// 并将数据存储
 						InputStream is = conn.getInputStream();
-						br = new BufferedReader(
-								new InputStreamReader(is));
+						br = new BufferedReader(new InputStreamReader(is));
 						// 第一次在这里忘了new对象了.
 						StringBuilder jsonData = new StringBuilder();
 						String line = br.readLine();
@@ -142,7 +143,7 @@ public class SplashActivity extends ActionBarActivity {
 
 					// 调用方法,查看是否存在最新app版本
 					isNewVersion(parseJson);
-					
+
 					try {
 						// 关流,关连接
 						br.close();
@@ -150,7 +151,7 @@ public class SplashActivity extends ActionBarActivity {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					
+
 				}
 			}
 
@@ -164,12 +165,13 @@ public class SplashActivity extends ActionBarActivity {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case LOADMAIN: // 进入主界面
-				Intent intent = new Intent(SplashActivity.this, HomeActivities.class);
+				Intent intent = new Intent(SplashActivity.this,
+						HomeActivities.class);
 				startActivity(intent);
-				
+
 				// 去到主界面之后,把当前的SplashActivity界面给finish()
 				finish();
-				
+
 				break;
 			case SHOWUPDATEDIALOG: // 进入主界面
 				showUpdateDialog();
@@ -187,13 +189,13 @@ public class SplashActivity extends ActionBarActivity {
 	 */
 	protected void isNewVersion(UrlBean parseJson) {
 		int versionNetCode = parseJson.getVersion();
-		
+
 		// 获得弹出对话框前的时间
 		long endTimeMillis = System.currentTimeMillis();
 		if (endTimeMillis - startTimeMillis < 3000) {
 			SystemClock.sleep(3000 - (endTimeMillis - startTimeMillis));
 		}
-		
+
 		if (versionNetCode == versionCode) {
 			// 版本号一致,不需要更新,直接进入主界面
 			loadMainActivity();
@@ -211,28 +213,48 @@ public class SplashActivity extends ActionBarActivity {
 	private void downLoadNewApk() {
 		// 导入Xutils库,调用相关方法
 		HttpUtils utils = new HttpUtils();
-		
-		// 下载新版本apk
-		utils.download(parseJson.getApkUrl(), "/mnt/sdcard/SG.apk", new RequestCallBack<File>() {
-			
-			@Override
-			public void onSuccess(ResponseInfo<File> arg0) {
-				// 下载apk成功
-				Toast.makeText(getApplicationContext(), "下载apk成功!", Toast.LENGTH_LONG).show();
-				
-				// 安装下载完成的apk
-				installApk();
-			}
 
-			@Override
-			public void onFailure(HttpException arg0, String arg1) {
-				// 下载apk失败
-				Toast.makeText(getApplicationContext(), "下载apk失败.", Toast.LENGTH_LONG).show();
-			}
-			
-		});
+		// 下载新版本apk
+		utils.download(parseJson.getApkUrl(), "/mnt/sdcard/SG.apk",
+				new RequestCallBack<File>() {
+
+					/*
+					 * 覆盖loading时候的方法,显示下载进度条
+					 */
+					@Override
+					public void onLoading(long total, long current,
+							boolean isUploading) {
+						// 设置下载进度条
+						pb_donwloadproProgress.setVisibility(View.VISIBLE);// 进度条设为可见
+						pb_donwloadproProgress.setMax((int) (total + 0.5F));// 设置进度条最大值与下载文件大小一致
+						pb_donwloadproProgress
+								.setProgress((int) (current + 0.5F));// 设置当前progress进度
+						super.onLoading(total, current, isUploading);
+					}
+
+					@Override
+					public void onSuccess(ResponseInfo<File> arg0) {
+						// 下载apk成功
+						Toast.makeText(getApplicationContext(), "下载apk成功!",
+								Toast.LENGTH_SHORT).show();
+
+						// 安装下载完成的apk
+						installApk();
+
+						// 下载完成之后,隐藏进度条
+						pb_donwloadproProgress.setVisibility(View.INVISIBLE);
+					}
+
+					@Override
+					public void onFailure(HttpException arg0, String arg1) {
+						// 下载apk失败
+						Toast.makeText(getApplicationContext(), "下载apk失败.",
+								Toast.LENGTH_SHORT).show();
+					}
+
+				});
 	}
-	
+
 	/**
 	 * 安装下载完成的最新的apk
 	 */
@@ -243,14 +265,14 @@ public class SplashActivity extends ActionBarActivity {
 		Uri data = Uri.fromFile(new File("/mnt/sdcard/SG.apk"));
 		String type = "application/vnd.android.package-archive";
 		intent.setDataAndType(data, type);
-		
+
 		// 开启安装apk的活动.
 		// 如果用户在安装的过程当中,取消了安装,则应该使用一个结果的返回,在返回结果里进入主界面
 		// 这里需要重写onActivityResult()的方法
-		startActivityForResult(intent,0);
+		startActivityForResult(intent, 0);
 	}
-	
-	/* 
+
+	/*
 	 * 如果用户在安装过程当中取消了apk的安装,则需要让界面回到主界面
 	 */
 	@Override
@@ -273,17 +295,17 @@ public class SplashActivity extends ActionBarActivity {
 	 */
 	private void showUpdateDialog() {
 		AlertDialog.Builder updateDialog = new AlertDialog.Builder(this);
-		
+
 		// 当用户在弹出对话框之后,并没有选择点击"更新"或者"不更新",而是直接按了返回键,那么就要进入到主界面当中.
 		updateDialog.setOnCancelListener(new OnCancelListener() {
-			
+
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				//	点解了返回键触发了取消事件,则回到主界面
+				// 点解了返回键触发了取消事件,则回到主界面
 				loadMainActivity();
 			}
 		});
-		
+
 		updateDialog
 				.setTitle("提醒")
 				.setMessage(
@@ -344,6 +366,8 @@ public class SplashActivity extends ActionBarActivity {
 
 		// 获得对根组件对象的引用,用以设置动画效果
 		rl_root = (RelativeLayout) findViewById(R.id.rl_splash_root);
+
+		pb_donwloadproProgress = (ProgressBar) findViewById(R.id.pb_splash_download_progress);
 	}
 
 	/**
