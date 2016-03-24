@@ -11,7 +11,17 @@ import java.net.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,15 +44,37 @@ import com.itheima.safeguard.domain.UrlBean;
 public class SplashActivity extends ActionBarActivity {
 
 	private static final long ANIMATION_TIMES = 3000L; // loading时候的动画播放时间设置为3秒
-	private RelativeLayout rl_root;
+	private static final int LOADMAIN = 1; // 进入主界面
+	private static final int SHOWUPDATEDIALOG = 2; // 显示更新的对话框
+	
+	private UrlBean parseJson;// 封装了网络最新应用的版本信息的bean
+	private RelativeLayout rl_root; // 动画的layout
 	private String urlPath_version = "http://10.0.2.2:8080/safeguard_version.json"; // 开启应用时,检查app应用版本情况的网络地址
+	private int versionCode; // 本app的版本号
+
+	private long startTimeMillis; // 开始访问网络的时间
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		initView(); // 初始化界面
+		initData(); // 初始化数据,获得本app本身的版本信息
 		initAnimation(); // 初始化动画
 		checkVersion(); // 访问网络,检查app的版本,如果有最新的,则用以更新app
+	}
+
+	/**
+	 * 初始化数据,获得app本身的版本信息,用以比对更新app
+	 */
+	private void initData() {
+		// 获得包管理者,取得包的相关信息,拿到本app的版本号
+		PackageManager pm = getPackageManager();
+		try {
+			PackageInfo packageInfo = pm.getPackageInfo(getPackageName(), 0);
+			versionCode = packageInfo.versionCode;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -55,6 +87,9 @@ public class SplashActivity extends ActionBarActivity {
 			@Override
 			public void run() {
 				try {
+					// 获得开始访问网络更新的开始时间
+					startTimeMillis = System.currentTimeMillis();
+					
 					// 访问版本更新的网址,设置连接/读取资源超时均为5秒
 					// 请求方式为GET,建立连接
 					URL url = new URL(urlPath_version);
@@ -75,14 +110,18 @@ public class SplashActivity extends ActionBarActivity {
 						// 第一次在这里忘了new对象了.
 						StringBuilder jsonData = new StringBuilder();
 						String line = br.readLine();
-						while (line!= null) {
+						while (line != null) {
 							jsonData.append(line);
 							line = br.readLine();
 						}
 
-						// 解析Json数据,并返回一个封装了Json数据的实体对象
-						UrlBean parseJson = parseJson(jsonData);
-						System.out.println(parseJson.toString());
+						parseJson = parseJson(jsonData);
+						System.out.println(parseJson.getVersion() + "版本号");
+
+						// 调用方法,查看是否存在最新app版本
+
+						isNewVersion(parseJson);
+
 						// 关流,关连接
 						br.close();
 						conn.disconnect();
@@ -104,6 +143,89 @@ public class SplashActivity extends ActionBarActivity {
 	}
 
 	/**
+	 * 创建Handler对象,用以处理子线程与主线程进行交互
+	 */
+	Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case LOADMAIN: // 进入主界面
+				Intent intent = new Intent(SplashActivity.this, HomeActivities.class);
+				startActivity(intent);
+				break;
+			case SHOWUPDATEDIALOG: // 进入主界面
+				showUpdateDialog();
+				break;
+			default:
+				break;
+			}
+		};
+	};
+
+	/**
+	 * 对比本app版本号与网络最新的版本号,是否有最新的版本
+	 * 
+	 * @param parseJson
+	 */
+	protected void isNewVersion(UrlBean parseJson) {
+		int versionNetCode = parseJson.getVersion();
+		
+		// 获得弹出对话框前的时间
+		long endTimeMillis = System.currentTimeMillis();
+		if (endTimeMillis - startTimeMillis < 3000) {
+			SystemClock.sleep(3000 - (endTimeMillis - startTimeMillis));
+		}
+		
+		if (versionNetCode == versionCode) {
+			// 版本号一致,不需要更新,直接进入主界面
+			loadMainActivity();
+		} else {
+			// 版本号不一致,需要弹出对话框,提示用户更新apk操作
+			Message msg = Message.obtain();
+			msg.what = SHOWUPDATEDIALOG;
+			handler.sendMessage(msg);
+		}
+	}
+
+	/**
+	 * 进入主界面
+	 */
+	private void loadMainActivity() {
+		Message msg = Message.obtain();
+		msg.what = LOADMAIN;
+		handler.sendMessage(msg);
+	}
+
+	/**
+	 * 应用版本号与网络最新版本号不一致,弹出apk更新的对话框 如果更新apk,则XXXXX(后台进行下载/安装) 如果不更新apk,则转到主界面中
+	 */
+	private void showUpdateDialog() {
+		AlertDialog.Builder updateDialog = new AlertDialog.Builder(this);
+		updateDialog
+				.setTitle("提醒")
+				.setMessage(
+						"亲!应用有最新的版本,请点击更新获得更好的保护哦~更新特性如下:"
+								+ parseJson.getDesc())
+				.setPositiveButton("更新", new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// 进入更新的逻辑
+						// 先用吐司弹一下,模拟更新的情况
+						Toast.makeText(SplashActivity.this, "正在更新~~",
+								Toast.LENGTH_LONG).show();
+					}
+				}).setNegativeButton("下次再更新", new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// 不更新apk,进入主界面
+						loadMainActivity();
+					}
+				});
+		updateDialog.show();// 显示对话框
+	}
+
+	/**
 	 * 这个方法用于对传入的Json数据参数进行解析,并返回一个UrlBean类的实体对象
 	 * 
 	 * @param jsonData
@@ -116,12 +238,12 @@ public class SplashActivity extends ActionBarActivity {
 		try {
 			// 开始解析json内容
 			JSONObject jsonObject = new JSONObject(jsonData + "");
-			String version = jsonObject.getString("version");
+			int version = jsonObject.getInt("version");
 			String apkUrl = jsonObject.getString("url");
 			String desc = jsonObject.getString("desc");
 
 			// 将读取到信息封装到urlBean中
-			urlBean.setVersion(Float.parseFloat(version));
+			urlBean.setVersion(version);
 			urlBean.setApkUrl(apkUrl);
 			urlBean.setDesc(desc);
 

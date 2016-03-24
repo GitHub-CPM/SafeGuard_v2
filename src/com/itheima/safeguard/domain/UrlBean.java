@@ -7,15 +7,15 @@ package com.itheima.safeguard.domain;
  */
 public class UrlBean {
 
-	private float version; // app的版本信息
+	private int version; // app的版本信息
 	private String apkUrl; // 更新最新版本app的网络地址
 	private String desc; // 新版本app的描述信息
 
-	public float getVersion() {
+	public int getVersion() {
 		return version;
 	}
 
-	public void setVersion(float version) {
+	public void setVersion(int version) {
 		this.version = version;
 	}
 
