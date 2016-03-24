@@ -72,6 +72,7 @@ public class SplashActivity extends ActionBarActivity {
 						InputStream is = conn.getInputStream();
 						BufferedReader br = new BufferedReader(
 								new InputStreamReader(is));
+						// 第一次在这里忘了new对象了.
 						StringBuilder jsonData = new StringBuilder();
 						String line = br.readLine();
 						while (line!= null) {
