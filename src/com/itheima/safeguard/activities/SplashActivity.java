@@ -94,9 +94,6 @@ public class SplashActivity extends ActionBarActivity {
 		// 创建子线程,将访问网络的耗时操作放在子线程上操作
 		new Thread(new Runnable() {
 
-			private HttpURLConnection conn;
-			private BufferedReader br;
-
 			@Override
 			public void run() {
 				try {
@@ -106,7 +103,8 @@ public class SplashActivity extends ActionBarActivity {
 					// 访问版本更新的网址,设置连接/读取资源超时均为5秒
 					// 请求方式为GET,建立连接
 					URL url = new URL(urlPath_version);
-					conn = (HttpURLConnection) url.openConnection();
+					HttpURLConnection conn = (HttpURLConnection) url
+							.openConnection();
 					conn.setReadTimeout(5000);
 					conn.setConnectTimeout(5000);
 					conn.setRequestMethod("GET");
@@ -117,7 +115,8 @@ public class SplashActivity extends ActionBarActivity {
 						// 建立连接,读取服务器端的数据到本地
 						// 并将数据存储
 						InputStream is = conn.getInputStream();
-						br = new BufferedReader(new InputStreamReader(is));
+						BufferedReader br = new BufferedReader(
+								new InputStreamReader(is));
 						// 第一次在这里忘了new对象了.
 						StringBuilder jsonData = new StringBuilder();
 						String line = br.readLine();
@@ -128,30 +127,26 @@ public class SplashActivity extends ActionBarActivity {
 
 						parseJson = parseJson(jsonData);
 
+						// 关流,关连接
+						br.close();
+						conn.disconnect();
+
+						// 调用方法,查看是否存在最新app版本
+						isNewVersion(parseJson);
+
 					} else { // 如果访问失败,则弹出吐司提醒用户版本更新失败.
+						// 进入主界面
+						loadMainActivity();
+						// 弹出网络访问失败信息
 						Toast.makeText(SplashActivity.this, "网络访问失败,版本更新失败.",
 								Toast.LENGTH_SHORT).show();
 					}
 
-					// 抓取异常信息,统一发消息到hanlder,以吐司的形式弹出
+					// 抓取异常信息
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
-				} finally {
-					// 最后必须要执行的操作
-
-					// 调用方法,查看是否存在最新app版本
-					isNewVersion(parseJson);
-
-					try {
-						// 关流,关连接
-						br.close();
-						conn.disconnect();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
 				}
 			}
 

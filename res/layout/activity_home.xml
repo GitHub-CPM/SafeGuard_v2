@@ -6,11 +6,8 @@
     android:orientation="vertical" >
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:text="Safe Guard"
-        android:textSize="24sp" />
+        style="@style/tv_title"
+        android:text="Safe Guard"/>
 
     <com.itheima.safeguard.view.MyTextView
         android:layout_width="fill_parent"
@@ -20,6 +17,7 @@
         android:text="你是我的小丫小卫士,怎么爱你都不嫌多,功能强大的确66666666666666666666" />
 
     <GridView
+        android:listSelector="@drawable/btn_home_gv_selector"
         android:verticalSpacing="8dip"
         android:id="@+id/gv_home_menu"
         android:layout_width="fill_parent"
