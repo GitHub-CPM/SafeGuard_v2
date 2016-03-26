@@ -59,7 +59,7 @@ public class SplashActivity extends ActionBarActivity {
 	private UrlBean parseJson;// 封装了网络最新应用的版本信息的bean
 	private RelativeLayout rl_root; // 动画的layout
 	private ProgressBar pb_donwloadproProgress; // 下载更新apk的进度条
-	private String urlPath_version = "http://10.0.2.2:8080/safeguard_version.json"; // 开启应用时,检查app应用版本情况的网络地址
+	private String urlPath_version = "http://192.168.1.100:8080/safeguard_version.json"; // 开启应用时,检查app应用版本情况的网络地址
 	private int versionCode; // 本app的版本号
 
 	private long startTimeMillis; // 开始访问网络的时间
@@ -127,9 +127,8 @@ public class SplashActivity extends ActionBarActivity {
 
 						parseJson = parseJson(jsonData);
 
-						// 关流,关连接
+						// 关流
 						br.close();
-						conn.disconnect();
 
 						// 调用方法,查看是否存在最新app版本
 						isNewVersion(parseJson);
@@ -138,9 +137,12 @@ public class SplashActivity extends ActionBarActivity {
 						// 进入主界面
 						loadMainActivity();
 						// 弹出网络访问失败信息
-						Toast.makeText(SplashActivity.this, "网络访问失败,版本更新失败.",
+						Toast.makeText(getApplicationContext(), "网络访问失败,版本更新失败.",
 								Toast.LENGTH_SHORT).show();
 					}
+					
+					// 关闭网络连接
+					conn.disconnect();
 
 					// 抓取异常信息
 				} catch (MalformedURLException e) {

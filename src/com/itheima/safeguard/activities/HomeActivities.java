@@ -2,6 +2,8 @@ package com.itheima.safeguard.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itheima.safeguard.R;
+import com.itheima.safeguard.utils.Md5Utils;
 import com.itheima.safeguard.utils.MyConstants;
 import com.itheima.safeguard.utils.SPTools;
 
@@ -38,11 +41,8 @@ public class HomeActivities extends Activity {
 
 	private GridView gv_menu; // 主界面的九宫格菜单
 	private MyAdapter myAdapter; // gridview的适配器
-	private EditText et_password_1;// 设置密码对话框的输入密码
-	private EditText et_password_2;// 设置密码对话框的确认密码
-	private Button btn_setPassword_yes;// 设置密码对话框的确定设置
-	private Button btn_setPassword_no;// 设置密码对话框的取消设置
-	private AlertDialog dialog; // 对话框
+	private AlertDialog dialog; // 初次进入手机防盗设置密码的对话框
+	private AlertDialog dialog2; // 再次进入已经设置密码的登陆对话框
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +64,13 @@ public class HomeActivities extends Activity {
 				// 对每个按钮进行不同的设置
 				switch (position) {
 				case 0:// 按钮0,即手机防盗
-						// 点击手机防盗弹出自定义对话框
-					showSettingPasswordDialog();
-
+					if (TextUtils.isEmpty(SPTools.getString(
+					// 点击手机防盗,判断是否设置过密码,如果没有设置弹出自定义对话框
+							getApplicationContext(), MyConstants.PASSWORD, ""))) {
+						showSettingPasswordDialog();
+					} else {// 如果已经设置了密码,则直接弹出登陆密码的对话框
+						showEnterPasswordDialog();
+					}
 					break;
 
 				default:
@@ -74,7 +78,75 @@ public class HomeActivities extends Activity {
 				}
 
 			}
+
 		});
+	}
+
+	/**
+	 * 点击手机防盗,之前设置了密码,提供登陆的自定义对话窗口
+	 */
+	private void showEnterPasswordDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		View view = View.inflate(getApplicationContext(),
+				R.layout.dialog_enter_home, null);
+		builder.setView(view);
+		dialog2 = builder.create();
+		dialog2.show();
+
+		// 获得自定义窗口文本/按钮的view对象
+		final EditText ed_password_enter = (EditText) view
+				.findViewById(R.id.ed_home_gv_dialog_enter_password);
+		final Button btn_login = (Button) view
+				.findViewById(R.id.btn_home_gv_dialog_enter_login);
+		final Button btn_cancle = (Button) view
+				.findViewById(R.id.btn_home_gv_dialog_enter_cancle);
+
+		// 点击了登陆按钮
+		btn_login.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				String password = ed_password_enter.getText().toString().trim();
+
+				if (TextUtils.isEmpty(password)) {
+					Toast.makeText(getApplicationContext(), "登陆密码不能为空",
+							Toast.LENGTH_SHORT).show();
+					return;
+				} else {
+
+					// 将输入的密码进行md5加密,判断是否为正确密码
+					password = Md5Utils.md5(password);
+					String passwordMD5 = SPTools.getString(
+							getApplicationContext(), MyConstants.PASSWORD, "");
+					if (!password.equals(passwordMD5)) {
+						// 如果密码错误,提示重新输入,并保留对话框
+						Toast.makeText(getApplicationContext(), "登陆密码错误",
+								Toast.LENGTH_SHORT).show();
+						return;
+					} else {
+						// 如果密码正确,进入手机防盗界面
+						Toast.makeText(getApplicationContext(), "亲,欢迎登陆!",
+								Toast.LENGTH_SHORT).show();
+						dialog2.dismiss();
+						Intent intent = new Intent();
+						intent.setClass(HomeActivities.this, LostFindActivities.class);
+						startActivity(intent);
+					}
+				}
+
+			}
+		});
+
+		// 点击了取消按钮
+		btn_cancle.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// 退出登陆对话框
+				dialog2.dismiss();
+			}
+		});
+
 	}
 
 	/**
@@ -83,14 +155,18 @@ public class HomeActivities extends Activity {
 	private void showSettingPasswordDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		View view = View.inflate(this, R.layout.dialog_enter_password, null);// 填充生成自定义的view
-		
-		et_password_1 = (EditText) view.findViewById(R.id.ed_home_gv_dialog_password);
-		et_password_2 = (EditText) view.findViewById(R.id.ed_home_gv_dialog_confirmpassword);
-		btn_setPassword_yes = (Button) view.findViewById(R.id.btn_home_gv_dialog_yes);
-		btn_setPassword_no = (Button) view.findViewById(R.id.btn_home_gv_dialog_no);
-		
+
+		final EditText et_password_1 = (EditText) view
+				.findViewById(R.id.ed_home_gv_dialog_password);
+		final EditText et_password_2 = (EditText) view
+				.findViewById(R.id.ed_home_gv_dialog_confirmpassword);
+		final Button btn_setPassword_yes = (Button) view
+				.findViewById(R.id.btn_home_gv_dialog_yes);
+		final Button btn_setPassword_no = (Button) view
+				.findViewById(R.id.btn_home_gv_dialog_no);
+
 		builder.setView(view);// 把自定义的view设置给对话框
-		
+
 		dialog = builder.create();
 
 		dialog.show();// 让对话框显示
@@ -116,11 +192,13 @@ public class HomeActivities extends Activity {
 					return;// 让用户重新输入
 				} else {
 					// 保存密码,存在sharedpreferences中,创建一个工具类,因为后期还有很多需要保存的内容
-					SPTools.putString(getApplicationContext(), MyConstants.PASSWORD, password_1);
+					password_1 = Md5Utils.md5(password_1);// 对用户密码进行MD5加密,然后再储存
+					SPTools.putString(getApplicationContext(),
+							MyConstants.PASSWORD, password_1);
 					Toast.makeText(getApplicationContext(), "OK,保存成功",
 							Toast.LENGTH_SHORT).show();
 				}
-				
+
 				// 退出对话框
 				dialog.dismiss();
 			}

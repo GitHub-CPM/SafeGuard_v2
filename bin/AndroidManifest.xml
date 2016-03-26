@@ -27,6 +27,11 @@
             </intent-filter>
         </activity>
         <activity android:name="com.itheima.safeguard.activities.HomeActivities"></activity>
+        <activity android:name="com.itheima.safeguard.activities.LostFindActivities"></activity>
+        <activity android:name="com.itheima.safeguard.activities.Setup1Activities"></activity>
+        <activity android:name="com.itheima.safeguard.activities.Setup2Activities"></activity>
+        <activity android:name="com.itheima.safeguard.activities.Setup3Activities"></activity>
+        <activity android:name="com.itheima.safeguard.activities.Setup4Activities"></activity>
     </application>
 
 </manifest>
