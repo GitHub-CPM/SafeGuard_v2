@@ -27,13 +27,11 @@ public class Setup1Activities extends BaseSetupActivities {
 		startActivity(Setup2Activities.class);
 	}
 
-	/* 因为没有上一个页面,所以方法内容为空
+	/* 不操作
 	 * @see com.itheima.safeguard.activities.BaseSetupActivities#preActivity()
 	 */
 	@Override
 	public void preActivity() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

@@ -10,5 +10,7 @@ public interface MyConstants {
 	String SPFILE = "config"; // sharedpreference的配置文件
 	String PASSWORD = "password"; // sharedpreference文件内的密码
 	String ISSETUPED = "issetuped"; // 是否已经设置过手机防盗的向导
+	String SIM = "sim"; //手机SIM卡信息
+	String SAFENUMBER = "safenumber"; //安全号码
 	
 }

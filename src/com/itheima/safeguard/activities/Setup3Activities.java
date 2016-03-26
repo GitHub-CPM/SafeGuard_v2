@@ -1,9 +1,13 @@
 package com.itheima.safeguard.activities;
 
-import com.itheima.safeguard.R;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import android.app.Activity;
-import android.os.Bundle;
+import com.itheima.safeguard.R;
+import com.itheima.safeguard.utils.MyConstants;
+import com.itheima.safeguard.utils.SPTools;
 
 /**
  * @author CPM
@@ -12,14 +16,62 @@ import android.os.Bundle;
  */
 public class Setup3Activities extends BaseSetupActivities {
 
+	private EditText et_safeNumber; // 安全号码
+
 	/**
 	 * 初始化第三个设置向导界面
 	 */
 	public void initView() {
 		setContentView(R.layout.activity_setup3);
+
+		et_safeNumber = (EditText) findViewById(R.id.et_set3_safenumber);
 	}
 
-	/* 进入第四个设置界面
+	/**
+	 * 点击"选择安全号码",弹出手机联系人列表
+	 * 列表以ListView显示
+	 */
+	public void selectSafeNumber() {
+
+	}
+	
+	/* 
+	 * 初始化数据,如果有安全号码已经存在sp了,那就取出来放到edittext中.
+	 * @see com.itheima.safeguard.activities.BaseSetupActivities#initData()
+	 */
+	@Override
+	public void initData() {
+		String safeNum = SPTools.getString(this, MyConstants.SAFENUMBER, "");
+		if (!TextUtils.isEmpty(safeNum)) {
+			et_safeNumber.setText(safeNum);
+		}
+		super.initData();
+	}
+
+	/* 
+	 * 如果用户没有输入安全号码,则不能进行下一步
+	 * @see com.itheima.safeguard.activities.BaseSetupActivities#next(android.view.View)
+	 */
+	@Override
+	public void next(View view) {
+		// 获得安全号码
+		String safeNumber = et_safeNumber.getText().toString().trim();
+		
+		if (TextUtils.isEmpty(safeNumber)) {
+			// 如果安全号码为空,就提示用户不能为空
+			Toast.makeText(this, "安全号码不能为空!", Toast.LENGTH_SHORT).show();
+			// 不能切换到下一页
+			return;
+		}else {// 安全号码不为空,就保存到sp当中
+			SPTools.putString(getApplicationContext(), MyConstants.SAFENUMBER, safeNumber);
+			Toast.makeText(this, "安全号码保存成功!", Toast.LENGTH_SHORT).show();
+		}
+		super.next(view);
+	}
+	
+	/*
+	 * 进入第四个设置界面
+	 * 
 	 * @see com.itheima.safeguard.activities.BaseSetupActivities#nextActivity()
 	 */
 	@Override
@@ -27,7 +79,9 @@ public class Setup3Activities extends BaseSetupActivities {
 		startActivity(Setup4Activities.class);
 	}
 
-	/* 退回到第二个设置界面
+	/*
+	 * 退回到第二个设置界面
+	 * 
 	 * @see com.itheima.safeguard.activities.BaseSetupActivities#preActivity()
 	 */
 	@Override
