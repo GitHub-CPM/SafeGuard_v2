@@ -137,17 +137,19 @@ public class SplashActivity extends ActionBarActivity {
 						// 进入主界面
 						loadMainActivity();
 						// 弹出网络访问失败信息
-						Toast.makeText(getApplicationContext(), "网络访问失败,版本更新失败.",
-								Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(),
+								"网络访问失败,版本更新失败.", Toast.LENGTH_SHORT).show();
 					}
-					
+
 					// 关闭网络连接
 					conn.disconnect();
 
 					// 抓取异常信息
 				} catch (MalformedURLException e) {
+					loadMainActivity();
 					e.printStackTrace();
 				} catch (IOException e) {
+					loadMainActivity();
 					e.printStackTrace();
 				}
 			}
