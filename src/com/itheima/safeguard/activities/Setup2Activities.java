@@ -72,10 +72,10 @@ public class Setup2Activities extends BaseSetupActivities {
 
 				// 还没有绑定SIM卡
 				if (TextUtils.isEmpty(simCardNum)) {
-					// String simSerialNumber = tm.getSimSerialNumber();//
+					 String simSerialNumber = tm.getSimSerialNumber();
 					// 获得本手机的SIM卡信息
 					// 由于我测试的机子没有装SIM卡,因此没有SIM卡时候,这句语句就会报错,正确语句应为上句
-					String simSerialNumber = "333";
+					// String simSerialNumber = "333";
 
 					simSerialNumber = Md5Utils.md5(simSerialNumber);// 加密之后再存进去
 					SPTools.putString(getApplicationContext(), MyConstants.SIM,
