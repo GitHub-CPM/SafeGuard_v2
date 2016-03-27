@@ -1,5 +1,6 @@
 package com.itheima.safeguard.activities;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -30,9 +31,28 @@ public class Setup3Activities extends BaseSetupActivities {
 	/**
 	 * 点击"选择安全号码",弹出手机联系人列表
 	 * 列表以ListView显示
+	 */ 
+	public void selectSafeNumber(View view) {
+		Intent friends = new Intent(getApplicationContext(),FriendsActivity.class);
+		startActivityForResult(friends, 1);
+	}
+	
+	/* 接收返回来的数据,将其显示在edittext上面
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
 	 */
-	public void selectSafeNumber() {
-
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (data != null) {
+			switch (resultCode) {
+			case 1:
+				String phoneNum = data.getStringExtra(MyConstants.SAFENUMBER);
+				et_safeNumber.setText(phoneNum);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	/* 
