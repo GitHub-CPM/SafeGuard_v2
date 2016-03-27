@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
@@ -85,11 +86,13 @@ public class Setup4Activities extends BaseSetupActivities {
 					Intent lostFindService = new Intent(Setup4Activities.this,
 							LostFindService.class);
 					startService(lostFindService);
+					Toast.makeText(Setup4Activities.this, "防盗功能已开启.", 0).show();
 				} else { // 如果没有勾选,则关闭防盗服务
 					setTextContent(false);
 					Intent lostFindService = new Intent(Setup4Activities.this,
 							LostFindService.class);
 					stopService(lostFindService);
+					Toast.makeText(Setup4Activities.this, "防盗功能已经关闭!", 0).show();
 				}
 			}
 		});

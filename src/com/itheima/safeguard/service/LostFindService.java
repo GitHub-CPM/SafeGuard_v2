@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.telephony.SmsMessage;
+import android.widget.Toast;
 
 /**
  * @author CPM
@@ -40,6 +41,21 @@ public class LostFindService extends Service {
 				SmsMessage message = SmsMessage.createFromPdu((byte[]) data);
 				String address = message.getOriginatingAddress(); // 发送者号码
 				String messageBody = message.getMessageBody();// 短信内容
+				System.out.println(messageBody + " : " + address);
+				
+				// 监听信息的内容,如果信息内容有特殊含义,如
+				// #*gps*# 激活GPS定位功能
+				// #*lockscreen*# 远程锁屏
+				// #*wipedata*#  远程清除数据
+				// #*music*#  音乐报警
+				if("#*gps*#".equals(messageBody)) {
+					// 启动gps后台服务,监听位置变化,并发送具体经纬度到安全号码上
+					Intent gpsIntent = new Intent(context,GPSService.class);
+					startService(gpsIntent);
+					Toast.makeText(LostFindService.this, "gps定位服务已经开启", 1).show();
+					abortBroadcast();
+				}
+				
 			}
 		}
 		
@@ -56,8 +72,8 @@ public class LostFindService extends Service {
 	
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		unregisterReceiver(smsReceiver);// 销毁短信接收者
+		super.onDestroy();
 	}
 
 }
