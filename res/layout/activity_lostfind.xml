@@ -8,12 +8,27 @@
         style="@style/tv_title"
         android:text="手机防盗界面" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="45dp"
-        android:gravity="center_vertical"
-        android:text="  安全号码为:"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:text="  安全号码为:"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_lostfind_safenum"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:textSize="20sp" />
+    </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -34,6 +49,7 @@
             android:textSize="20sp" />
 
         <ImageView
+            android:id="@+id/iv_lostfind_lock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -47,6 +63,8 @@
         android:background="#aaaaaa" />
 
     <TextView
+        android:clickable="true"
+        android:onClick="enterSetup"
         android:layout_width="fill_parent"
         android:layout_height="45dp"
         android:gravity="center_vertical"
@@ -66,6 +84,7 @@
         android:gravity="center_vertical"
         android:text="  SIM卡变更报警"
         android:textSize="20sp" />
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="35dp"
@@ -73,6 +92,7 @@
         android:gravity="center_vertical"
         android:text="  GPS追踪: #*gps*#"
         android:textSize="20sp" />
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="35dp"
@@ -80,6 +100,7 @@
         android:gravity="center_vertical"
         android:text="  远程锁屏: #*lockscreen*#"
         android:textSize="20sp" />
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="35dp"
@@ -87,6 +108,7 @@
         android:gravity="center_vertical"
         android:text="  远程清除数据: #*wipedata*#"
         android:textSize="20sp" />
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="35dp"
