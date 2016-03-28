@@ -71,6 +71,8 @@ int attr listPreferredItemHeightSmall 0x7f01001d
 int attr listPreferredItemPaddingLeft 0x7f01001f
 int attr listPreferredItemPaddingRight 0x7f010020
 int attr logo 0x7f01002d
+int attr mycontent 0x7f01006f
+int attr mytitle 0x7f01006e
 int attr navigationMode 0x7f010027
 int attr paddingEnd 0x7f010039
 int attr paddingStart 0x7f010038
@@ -282,6 +284,7 @@ int id btn_lostfind_menu_cancle 0x7f070054
 int id btn_lostfind_menu_modify 0x7f070053
 int id btn_set2_bind 0x7f070043
 int id cb_set4_isselected 0x7f070046
+int id cb_settingcenter_item_check 0x7f07005b
 int id checkbox 0x7f07002d
 int id collapseActionView 0x7f07000d
 int id default_activity_button 0x7f070028
@@ -346,6 +349,8 @@ int id tv_item_friends_phonenum 0x7f070056
 int id tv_item_home_gv_name 0x7f070058
 int id tv_lostfind_safenum 0x7f07003e
 int id tv_set4_openprotect 0x7f070047
+int id tv_settingcenter_item_content 0x7f07005a
+int id tv_settingcenter_item_title 0x7f070059
 int id up 0x7f070021
 int id useLogo 0x7f070003
 int id withText 0x7f07000c
@@ -376,17 +381,19 @@ int layout abc_search_view 0x7f030016
 int layout abc_simple_decor 0x7f030017
 int layout activity_home 0x7f030018
 int layout activity_lostfind 0x7f030019
-int layout activity_setup1 0x7f03001a
-int layout activity_setup2 0x7f03001b
-int layout activity_setup3 0x7f03001c
-int layout activity_setup4 0x7f03001d
-int layout activity_splash 0x7f03001e
-int layout dialog_enter_home 0x7f03001f
-int layout dialog_enter_password 0x7f030020
-int layout dialog_lostfind_menu_modify 0x7f030021
-int layout item_friends_listview 0x7f030022
-int layout item_home_gridview 0x7f030023
-int layout support_simple_spinner_dropdown_item 0x7f030024
+int layout activity_settingcenter 0x7f03001a
+int layout activity_setup1 0x7f03001b
+int layout activity_setup2 0x7f03001c
+int layout activity_setup3 0x7f03001d
+int layout activity_setup4 0x7f03001e
+int layout activity_splash 0x7f03001f
+int layout dialog_enter_home 0x7f030020
+int layout dialog_enter_password 0x7f030021
+int layout dialog_lostfind_menu_modify 0x7f030022
+int layout item_friends_listview 0x7f030023
+int layout item_home_gridview 0x7f030024
+int layout item_settingcenter_view 0x7f030025
+int layout support_simple_spinner_dropdown_item 0x7f030026
 int menu lostfind 0x7f0e0000
 int raw test2 0x7f060000
 int string abc_action_bar_home_description 0x7f0c0001
@@ -658,4 +665,7 @@ int[] styleable View { 0x010100da, 0x7f010038, 0x7f010039 }
 int styleable View_android_focusable 0
 int styleable View_paddingEnd 2
 int styleable View_paddingStart 1
+int[] styleable settingcenteritemview { 0x7f01006e, 0x7f01006f }
+int styleable settingcenteritemview_mycontent 1
+int styleable settingcenteritemview_mytitle 0
 int xml device_admin_sample 0x7f050000

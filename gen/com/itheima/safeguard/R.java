@@ -461,6 +461,22 @@ containing a value of this type.
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
         public static final int logo=0x7f01002d;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int mycontent=0x7f01006f;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int mytitle=0x7f01006e;
         /**  The type of navigation to use. 
          <p>Must be one of the following constant values.</p>
 <table>
@@ -1127,6 +1143,7 @@ containing a value of this type.
         public static final int btn_lostfind_menu_modify=0x7f070053;
         public static final int btn_set2_bind=0x7f070043;
         public static final int cb_set4_isselected=0x7f070046;
+        public static final int cb_settingcenter_item_check=0x7f07005b;
         public static final int checkbox=0x7f07002d;
         public static final int collapseActionView=0x7f07000d;
         public static final int default_activity_button=0x7f070028;
@@ -1191,6 +1208,8 @@ containing a value of this type.
         public static final int tv_item_home_gv_name=0x7f070058;
         public static final int tv_lostfind_safenum=0x7f07003e;
         public static final int tv_set4_openprotect=0x7f070047;
+        public static final int tv_settingcenter_item_content=0x7f07005a;
+        public static final int tv_settingcenter_item_title=0x7f070059;
         public static final int up=0x7f070021;
         public static final int useLogo=0x7f070003;
         public static final int withText=0x7f07000c;
@@ -1247,17 +1266,19 @@ containing a value of this type.
         public static final int abc_simple_decor=0x7f030017;
         public static final int activity_home=0x7f030018;
         public static final int activity_lostfind=0x7f030019;
-        public static final int activity_setup1=0x7f03001a;
-        public static final int activity_setup2=0x7f03001b;
-        public static final int activity_setup3=0x7f03001c;
-        public static final int activity_setup4=0x7f03001d;
-        public static final int activity_splash=0x7f03001e;
-        public static final int dialog_enter_home=0x7f03001f;
-        public static final int dialog_enter_password=0x7f030020;
-        public static final int dialog_lostfind_menu_modify=0x7f030021;
-        public static final int item_friends_listview=0x7f030022;
-        public static final int item_home_gridview=0x7f030023;
-        public static final int support_simple_spinner_dropdown_item=0x7f030024;
+        public static final int activity_settingcenter=0x7f03001a;
+        public static final int activity_setup1=0x7f03001b;
+        public static final int activity_setup2=0x7f03001c;
+        public static final int activity_setup3=0x7f03001d;
+        public static final int activity_setup4=0x7f03001e;
+        public static final int activity_splash=0x7f03001f;
+        public static final int dialog_enter_home=0x7f030020;
+        public static final int dialog_enter_password=0x7f030021;
+        public static final int dialog_lostfind_menu_modify=0x7f030022;
+        public static final int item_friends_listview=0x7f030023;
+        public static final int item_home_gridview=0x7f030024;
+        public static final int item_settingcenter_view=0x7f030025;
+        public static final int support_simple_spinner_dropdown_item=0x7f030026;
     }
     public static final class menu {
         public static final int lostfind=0x7f0e0000;
@@ -3179,5 +3200,48 @@ containing a value of this type.
           @attr name com.itheima.safeguard:paddingStart
         */
         public static final int View_paddingStart = 1;
+        /** Attributes that can be used with a settingcenteritemview.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #settingcenteritemview_mycontent com.itheima.safeguard:mycontent}</code></td><td></td></tr>
+           <tr><td><code>{@link #settingcenteritemview_mytitle com.itheima.safeguard:mytitle}</code></td><td></td></tr>
+           </table>
+           @see #settingcenteritemview_mycontent
+           @see #settingcenteritemview_mytitle
+         */
+        public static final int[] settingcenteritemview = {
+            0x7f01006e, 0x7f01006f
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.itheima.safeguard.R.attr#mycontent}
+          attribute's value can be found in the {@link #settingcenteritemview} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.itheima.safeguard:mycontent
+        */
+        public static final int settingcenteritemview_mycontent = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.itheima.safeguard.R.attr#mytitle}
+          attribute's value can be found in the {@link #settingcenteritemview} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.itheima.safeguard:mytitle
+        */
+        public static final int settingcenteritemview_mytitle = 0;
     };
 }

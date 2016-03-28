@@ -74,7 +74,12 @@ public class HomeActivities extends Activity {
 						showEnterPasswordDialog();
 					}
 					break;
-
+				case 8:// 按钮8,即设置中心
+						// 进入设置中心
+					Intent settingcenter = new Intent(HomeActivities.this,
+							SettingCenterActivities.class);
+					startActivity(settingcenter);
+					break;
 				default:
 					break;
 				}
@@ -131,7 +136,8 @@ public class HomeActivities extends Activity {
 								Toast.LENGTH_SHORT).show();
 						dialog2.dismiss();
 						Intent intent = new Intent();
-						intent.setClass(HomeActivities.this, LostFindActivities.class);
+						intent.setClass(HomeActivities.this,
+								LostFindActivities.class);
 						startActivity(intent);
 					}
 				}
@@ -267,9 +273,10 @@ public class HomeActivities extends Activity {
 
 			// 为每个九宫格的名字设置名字
 			tv_name.setText(names[position]);
-			
+
 			if (position == 0) { // 看是否有修改过的名字
-				String newName = SPTools.getString(HomeActivities.this, MyConstants.LOSTFINDNEWNAME, "");
+				String newName = SPTools.getString(HomeActivities.this,
+						MyConstants.LOSTFINDNEWNAME, "");
 				if (!TextUtils.isEmpty(newName)) {
 					tv_name.setText(newName);
 				}
@@ -277,7 +284,7 @@ public class HomeActivities extends Activity {
 
 			return view;
 		}
-		
+
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
@@ -291,8 +298,10 @@ public class HomeActivities extends Activity {
 		}
 
 	}
-	
-	/* 通知重新刷新页面数据
+
+	/*
+	 * 通知重新刷新页面数据
+	 * 
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
