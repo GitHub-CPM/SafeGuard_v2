@@ -3,6 +3,8 @@ package com.itheima.safeguard.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Notification.Action;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -265,10 +267,17 @@ public class HomeActivities extends Activity {
 
 			// 为每个九宫格的名字设置名字
 			tv_name.setText(names[position]);
+			
+			if (position == 0) { // 看是否有修改过的名字
+				String newName = SPTools.getString(HomeActivities.this, MyConstants.LOSTFINDNEWNAME, "");
+				if (!TextUtils.isEmpty(newName)) {
+					tv_name.setText(newName);
+				}
+			}
 
 			return view;
 		}
-
+		
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
@@ -281,6 +290,17 @@ public class HomeActivities extends Activity {
 			return 0;
 		}
 
+	}
+	
+	/* 通知重新刷新页面数据
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	protected void onResume() {
+		// 主要是更新修改名字了的"手机防盗"
+		// 通知适配器更新数据
+		myAdapter.notifyDataSetChanged();
+		super.onResume();
 	}
 
 }

@@ -10,7 +10,10 @@ public interface MyConstants {
 	String SPFILE = "config"; // sharedpreference的配置文件
 	String PASSWORD = "password"; // sharedpreference文件内的密码
 	String ISSETUPED = "issetuped"; // 是否已经设置过手机防盗的向导
-	String SIM = "sim"; //手机SIM卡信息
-	String SAFENUMBER = "safenumber"; //安全号码
-	
+	String SIM = "sim"; // 手机SIM卡信息
+	String SAFENUMBER = "safenumber"; // 安全号码
+	int SEED = 520; // 用以加密/解密的种子
+	String LOSTFIND = "lostfind"; // 是否开机开启手机防盗功能
+	String LOSTFINDNEWNAME = "lostfindnewname"; //修改了"手机防盗"的新名字
+
 }

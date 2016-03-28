@@ -83,16 +83,18 @@ public class Setup4Activities extends BaseSetupActivities {
 					boolean isChecked) {
 				if (isChecked) { // 如果已经勾选了,则开启防盗服务
 					setTextContent(true);
+					SPTools.putBoolean(Setup4Activities.this, MyConstants.LOSTFIND, true);
 					Intent lostFindService = new Intent(Setup4Activities.this,
 							LostFindService.class);
 					startService(lostFindService);
-					Toast.makeText(Setup4Activities.this, "防盗功能已开启.", 0).show();
+					Toast.makeText(Setup4Activities.this, "防盗功能已开启.", Toast.LENGTH_SHORT).show();
 				} else { // 如果没有勾选,则关闭防盗服务
+					SPTools.putBoolean(Setup4Activities.this, MyConstants.LOSTFIND, false);
 					setTextContent(false);
 					Intent lostFindService = new Intent(Setup4Activities.this,
 							LostFindService.class);
 					stopService(lostFindService);
-					Toast.makeText(Setup4Activities.this, "防盗功能已经关闭!", 0).show();
+					Toast.makeText(Setup4Activities.this, "防盗功能已经关闭!", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});

@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.itheima.safeguard.LostFindActivities" >
+
+    <item
+        android:id="@+id/menu_lostfind_modify"
+        android:orderInCategory="100"
+        android:title="修改手机防盗名字"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_lostfind_settings"
+        android:orderInCategory="100"
+        android:title="菜单设置"
+        app:showAsAction="never"/>
+
+</menu>

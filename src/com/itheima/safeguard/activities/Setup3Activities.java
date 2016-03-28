@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.itheima.safeguard.R;
+import com.itheima.safeguard.utils.EncryptUtils;
 import com.itheima.safeguard.utils.MyConstants;
 import com.itheima.safeguard.utils.SPTools;
 
@@ -62,6 +63,7 @@ public class Setup3Activities extends BaseSetupActivities {
 	@Override
 	public void initData() {
 		String safeNum = SPTools.getString(this, MyConstants.SAFENUMBER, "");
+		safeNum = EncryptUtils.decrypt(MyConstants.SEED, safeNum);// 解密显示
 		if (!TextUtils.isEmpty(safeNum)) {
 			et_safeNumber.setText(safeNum);
 		}
@@ -83,6 +85,7 @@ public class Setup3Activities extends BaseSetupActivities {
 			// 不能切换到下一页
 			return;
 		}else {// 安全号码不为空,就保存到sp当中
+			safeNumber = EncryptUtils.encrypt(MyConstants.SEED, safeNumber);
 			SPTools.putString(getApplicationContext(), MyConstants.SAFENUMBER, safeNumber);
 			Toast.makeText(this, "安全号码保存成功!", Toast.LENGTH_SHORT).show();
 		}

@@ -1,14 +1,15 @@
 package com.itheima.safeguard.receiver;
 
-import com.itheima.safeguard.utils.MyConstants;
-import com.itheima.safeguard.utils.SPTools;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
-import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
+
+import com.itheima.safeguard.service.LostFindService;
+import com.itheima.safeguard.utils.EncryptUtils;
+import com.itheima.safeguard.utils.MyConstants;
+import com.itheima.safeguard.utils.SPTools;
 
 /**
  * @author CPM
@@ -32,8 +33,14 @@ public class BootReceiver extends BroadcastReceiver {
 			// 发送短信到安全号码,内容为手机SIM被换了.
 			SmsManager sm = SmsManager.getDefault(); // 获得短信管理者
 			sm.sendTextMessage(
-					SPTools.getString(context, MyConstants.SAFENUMBER, ""),
+					EncryptUtils.decrypt(MyConstants.SEED, SPTools.getString(context, MyConstants.SAFENUMBER, "")),
 					null, "手机SIM被更换了!", null, null);
+		}
+		if (SPTools.getBoolean(context, MyConstants.LOSTFIND, false)) {
+			// 开机就开启手机防盗服务
+			Intent lostFindService = new Intent(context,
+					LostFindService.class);
+			context.startService(lostFindService);
 		}
 
 	}
