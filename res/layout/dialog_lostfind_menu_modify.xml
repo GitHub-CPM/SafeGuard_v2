@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_lostfind_menu_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+    
+    <TextView 
+        style="@style/tv_title"
+        android:textColor="#000000"
+        android:background="#5000ff00"
+        android:text="修改手机防盗显示名字"/>
+    
+    <EditText
+        android:textColor="#000000"
+        android:id="@+id/ed_lostfind_menu_newname"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:hint="请输入新的名字" />
+    
+    <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        
+        <Button 
+        android:textColor="#000000"
+            android:text="修改"
+            android:id="@+id/btn_lostfind_menu_modify"
+            android:background="@drawable/btn_home_dialog_selector"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+        
+        <Button
+            android:id="@+id/btn_lostfind_menu_cancle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_home_dialog_selector"
+            android:text="取消"
+            android:textColor="#000000" />
+        
+    </LinearLayout>
+
+</LinearLayout>

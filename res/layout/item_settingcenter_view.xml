@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/btn_home_dialog_selector"
+    android:clickable="true" >
+
+    <TextView
+        android:id="@+id/tv_settingcenter_item_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="设置自动开启防盗服务"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_settingcenter_item_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_settingcenter_item_title"
+        android:layout_margin="5dp"
+        android:text="防盗服务已关闭"
+        android:textSize="18sp" />
+
+    <CheckBox
+        android:clickable="false"
+        android:id="@+id/cb_settingcenter_item_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp" />
+
+</RelativeLayout>

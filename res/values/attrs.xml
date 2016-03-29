@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="settingcenteritemview">
+        <attr name="mytitle" format="string" />
+        <attr name="mycontent" format="string" />
+    </declare-styleable>
+
+</resources>
