@@ -2,9 +2,6 @@ package com.itheima.safeguard.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.Notification.Action;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -73,6 +70,11 @@ public class HomeActivities extends Activity {
 					} else {// 如果已经设置了密码,则直接弹出登陆密码的对话框
 						showEnterPasswordDialog();
 					}
+					break;
+				case 1:// 进入通讯卫士
+					Intent TelSms = new Intent(HomeActivities.this,
+							TelSmsActivity.class);
+					startActivity(TelSms);
 					break;
 				case 8:// 按钮8,即设置中心
 						// 进入设置中心

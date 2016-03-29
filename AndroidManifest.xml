@@ -54,6 +54,8 @@
         </activity>
         <activity android:name="com.itheima.safeguard.activities.SettingCenterActivities" >
         </activity>
+        <activity android:name="com.itheima.safeguard.activities.TelSmsActivity" >
+        </activity>
 
         <service android:name="com.itheima.safeguard.service.LostFindService" >
         </service>

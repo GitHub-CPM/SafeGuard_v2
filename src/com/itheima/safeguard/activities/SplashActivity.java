@@ -40,6 +40,8 @@ import android.widget.Toast;
 
 import com.itheima.safeguard.R;
 import com.itheima.safeguard.domain.UrlBean;
+import com.itheima.safeguard.utils.MyConstants;
+import com.itheima.safeguard.utils.SPTools;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -70,7 +72,13 @@ public class SplashActivity extends ActionBarActivity {
 		initView(); // 初始化界面
 		initData(); // 初始化数据,获得本app本身的版本信息
 		initAnimation(); // 初始化动画
-		checkVersion(); // 访问网络,检查app的版本,如果有最新的,则用以更新app
+		
+		// 判断是否勾选了自动更新应用的服务
+		if(!SPTools.getBoolean(getApplicationContext(), MyConstants.AUTOUPDATE, false)) {
+			checkVersion(); // 访问网络,检查app的版本,如果有最新的,则用以更新app
+		}else { // 直接进入主界面  
+			loadMainActivity();
+		}
 	}
 
 	/**

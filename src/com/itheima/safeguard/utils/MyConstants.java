@@ -15,5 +15,6 @@ public interface MyConstants {
 	int SEED = 520; // 用以加密/解密的种子
 	String LOSTFIND = "lostfind"; // 是否开机开启手机防盗功能
 	String LOSTFINDNEWNAME = "lostfindnewname"; //修改了"手机防盗"的新名字
+	String AUTOUPDATE = "autoupdate"; //是否开启自动更新应用程序监测
 
 }
