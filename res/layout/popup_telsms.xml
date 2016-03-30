@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <TextView
+        android:clickable="true"
+        android:id="@+id/tv_telsms_popup_self"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@android:drawable/btn_star_big_on"
+        android:gravity="center"
+        android:text=" 自己手动添加"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:clickable="true"
+        android:id="@+id/tv_telsms_popup_contracts"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@android:drawable/btn_star_big_on"
+        android:gravity="center"
+        android:text=" 从联系号码添加"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:clickable="true"
+        android:id="@+id/tv_telsms_popup_call"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@android:drawable/btn_star_big_on"
+        android:gravity="center"
+        android:text=" 从通话记录添加"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:clickable="true"
+        android:id="@+id/tv_telsms_popup_sms"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@android:drawable/btn_star_big_on"
+        android:gravity="center"
+        android:text=" 从短信记录添加"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+</LinearLayout>

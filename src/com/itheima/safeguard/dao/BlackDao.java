@@ -85,6 +85,7 @@ public class BlackDao {
 	 *            添加的拦截模式
 	 */
 	public void add(String phone, int mode) {
+		delete(phone);
 		// 获取可写的数据库
 		SQLiteDatabase database = db.getWritableDatabase();
 
@@ -117,7 +118,7 @@ public class BlackDao {
 	public void delete(String phone) {
 		SQLiteDatabase database = db.getWritableDatabase();
 		// 删除号码
-		database.delete(BlackTable.BLACKTABLE, BlackTable.PHONE + "=?",
+		database.delete(BlackTable.BLACKTABLE, BlackTable.PHONE + " =?",
 				new String[] { phone });
 		database.close();
 	}

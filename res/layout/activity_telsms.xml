@@ -13,6 +13,7 @@
             android:text="通讯卫士" />
 
         <Button
+            android:id="@+id/btn_telsms_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

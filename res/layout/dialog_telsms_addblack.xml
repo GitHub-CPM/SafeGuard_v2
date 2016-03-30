@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        style="@style/tv_title"
+        android:background="#5000ff00"
+        android:text="添加号码到黑名单" />
+
+    <EditText
+        android:id="@+id/et_telsms_dialog_phone"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:hint="请输入号码"
+        android:inputType="phone" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/cb_telsms_dialog_smsmode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="短信拦截"
+            android:textColor="#000000" />
+        <CheckBox
+            android:id="@+id/cb_telsms_dialog_telmode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="短信拦截"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_telsms_dialog_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_home_dialog_selector"
+            android:text="添加" />
+
+        <Button
+            android:id="@+id/btn_telsms_dialog_cancle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_home_dialog_selector"
+            android:text="取消" />
+    </LinearLayout>
+
+</LinearLayout>
