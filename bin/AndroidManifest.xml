@@ -22,8 +22,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
 
     <application
         android:allowBackup="true"
@@ -62,6 +62,10 @@
         </activity>
         <activity android:name="com.itheima.safeguard.activities.SmsLogActivity" >
         </activity>
+        <activity android:name="com.itheima.safeguard.activities.AToolActivity" >
+        </activity>
+        <activity android:name="com.itheima.safeguard.activities.PhoneLocationActivity" >
+        </activity>
 
         <service android:name="com.itheima.safeguard.service.LostFindService" >
         </service>
@@ -88,7 +92,6 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-        
     </application>
 
 </manifest>

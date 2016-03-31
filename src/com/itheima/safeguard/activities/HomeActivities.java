@@ -76,6 +76,10 @@ public class HomeActivities extends Activity {
 							TelSmsActivity.class);
 					startActivity(TelSms);
 					break;
+				case 7://按钮7,进入高级工具界面
+					Intent atool = new Intent(HomeActivities.this,AToolActivity.class);
+					startActivity(atool);
+					break;
 				case 8:// 按钮8,即设置中心
 						// 进入设置中心
 					Intent settingcenter = new Intent(HomeActivities.this,

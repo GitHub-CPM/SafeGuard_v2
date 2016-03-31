@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:text="  请输入要查询的号码:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/et_phonelocation_phonenum"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:hint="如:13800138000" />
+    
+    <Button 
+        android:onClick="searchLocation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="点击查询"/>
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:text="  归属地如下:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:id="@+id/tv_phonelocation_location"
+        android:gravity="center_vertical"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+</LinearLayout>
