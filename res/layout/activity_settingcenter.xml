@@ -11,26 +11,62 @@
 
     <com.itheima.safeguard.view.SettingCenterItemView
         android:id="@+id/sciv_settringcenter_autoupdate"
-        itheima:mytitle="应用自动更新服务"
-        itheima:mycontent="自动更新已关闭#自动更新已开启"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        itheima:mycontent="自动更新已关闭#自动更新已开启"
+        itheima:mytitle="应用自动更新服务" >
     </com.itheima.safeguard.view.SettingCenterItemView>
 
     <com.itheima.safeguard.view.SettingCenterItemView
         android:id="@+id/sciv_settingcenter_blackNum"
-        itheima:mytitle="黑名单拦截"
-        itheima:mycontent="拦截已关闭#拦截已开启"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        itheima:mycontent="拦截已关闭#拦截已开启"
+        itheima:mytitle="黑名单拦截" >
     </com.itheima.safeguard.view.SettingCenterItemView>
 
     <com.itheima.safeguard.view.SettingCenterItemView
         android:id="@+id/sciv_settingcenter_phonelocation"
-        itheima:mytitle="来电区域显示"
-        itheima:mycontent="来电区域显示已关闭#来电区域显示已开启"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        itheima:mycontent="来电区域显示已关闭#来电区域显示已开启"
+        itheima:mytitle="来电区域显示" >
     </com.itheima.safeguard.view.SettingCenterItemView>
+
+    <RelativeLayout
+        android:id="@+id/rl_settingcenter_comingphonestyle_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_home_dialog_selector"
+        android:clickable="true" >
+
+        <TextView
+            android:id="@+id/tv_settingcenter_comingphonestyle_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="设置来电显示背景样式"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_settingcenter_comingphonestyle_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_settingcenter_comingphonestyle_title"
+            android:layout_margin="5dp"
+            android:textColor="#0000FF"
+            android:text="卫士蓝"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/tv_settingcenter_comingphonestyle_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="8dp"
+            android:clickable="false"
+            android:src="@drawable/btn_settingcenter_comingphonestyle_iv_selector" />
+    </RelativeLayout>
 
 </LinearLayout>

@@ -1,10 +1,15 @@
 package com.itheima.safeguard.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itheima.safeguard.R;
@@ -20,6 +25,11 @@ public class SettingCenterActivities extends Activity {
 	private SettingCenterItemView sciv_autoupdate; // 自动更新的条目
 	private SettingCenterItemView sciv_blackNum; // 黑名单拦截服务
 	private SettingCenterItemView sciv_phonelocation;
+	private TextView tv_style;
+	private RelativeLayout rl_btn;
+	private String[] styleName = { "卫士蓝", "金属灰", "苹果绿", "活力橙", "半透明" }; // 自定义吐司的背景样式
+	private int[] styleColor = { Color.BLUE, Color.GRAY, Color.GREEN,
+			Color.RED, Color.WHITE };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +56,34 @@ public class SettingCenterActivities extends Activity {
 	 * 监听条目是否被触发
 	 */
 	private void initEvent() {
+		rl_btn.setOnClickListener(new OnClickListener() {
+			// 选择切换来电归属地弹出自定义吐司的背景样式
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder ab = new AlertDialog.Builder(
+						SettingCenterActivities.this);
+				ab.setTitle("选择来电归属地背景样式");
+				ab.setSingleChoiceItems(styleName, Integer.parseInt(SPTools
+						.getString(getApplicationContext(),
+								MyConstants.TOAST_STYLE, "0")),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								SPTools.putString(getApplicationContext(),
+										MyConstants.TOAST_STYLE, which + "");
+								tv_style.setText(styleName[which]);
+								tv_style.setTextColor(styleColor[which]);
+								Toast.makeText(getApplicationContext(),
+										"已选择" + styleName[which],
+										Toast.LENGTH_SHORT).show();
+								dialog.dismiss();
+							}
+						});
+				ab.show();
+			}
+		});
+
 		sciv_phonelocation.setItemClickListener(new OnClickListener() {
 			// 监测来电区域显示功能是否被点击
 			@Override
@@ -135,6 +173,11 @@ public class SettingCenterActivities extends Activity {
 		sciv_autoupdate = (SettingCenterItemView) findViewById(R.id.sciv_settringcenter_autoupdate);
 		sciv_blackNum = (SettingCenterItemView) findViewById(R.id.sciv_settingcenter_blackNum);
 		sciv_phonelocation = (SettingCenterItemView) findViewById(R.id.sciv_settingcenter_phonelocation);
+
+		// 来电归属地背景样式
+		tv_style = (TextView) findViewById(R.id.tv_settingcenter_comingphonestyle_content);
+		rl_btn = (RelativeLayout) findViewById(R.id.rl_settingcenter_comingphonestyle_btn);
+		tv_style.setText(SPTools.getString(getApplicationContext(), MyConstants.TOAST_STYLE, "卫士蓝"));
 	}
 
 }
