@@ -337,7 +337,7 @@ int id progress_horizontal 0x7f070019
 int id radio 0x7f07002f
 int id rl_lostfind_root 0x7f07003d
 int id rl_splash_root 0x7f07004a
-int id sciv_settingcenter_intercept 0x7f070044
+int id sciv_settingcenter_blackNum 0x7f070044
 int id sciv_settringcenter_autoupdate 0x7f070043
 int id search_badge 0x7f070032
 int id search_bar 0x7f070031

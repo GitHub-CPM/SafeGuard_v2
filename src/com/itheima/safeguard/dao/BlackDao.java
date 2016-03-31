@@ -3,7 +3,6 @@ package com.itheima.safeguard.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.R.integer;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -24,6 +23,34 @@ public class BlackDao {
 
 	public BlackDao(Context context) {
 		this.db = new BlackDB(context);
+	}
+
+	/**
+	 * 判断传入手机号码的拦截模式是什么
+	 * 
+	 * @param phoneNum
+	 *            需要查询的手机号码
+	 * @return 拦截模式:0.不拦截;1.短信拦截;2.电话拦截;3.全部拦截;
+	 */
+	public int getMode(String phoneNum) {
+		// 默认模式为不拦截
+		int mode = 0;
+		// 获得可读数据库
+		SQLiteDatabase database = db.getReadableDatabase();
+		// 根据手机号码从blacktb表中选择它的拦截模式
+		Cursor cursor = database.rawQuery(
+				"select mode from blacktb where phone = ?",
+				new String[] { phoneNum });
+		// 如果游标移动到有存储该手机号码的列,则返回true
+		if (cursor.moveToNext()) {
+			// 返回该拦截模式
+			mode = cursor.getInt(0);
+		} else {
+			// 否则,则不拦截
+			mode = 0;
+		}
+		cursor.close();
+		return mode;
 	}
 
 	/**

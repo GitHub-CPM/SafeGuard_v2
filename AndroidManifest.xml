@@ -65,6 +65,8 @@
         </service>
         <service android:name="com.itheima.safeguard.service.GPSService" >
         </service>
+        <service android:name="com.itheima.safeguard.service.BlackNumberService" >
+        </service>
 
         <receiver android:name="com.itheima.safeguard.receiver.BootReceiver" >
             <intent-filter>
@@ -84,6 +86,7 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+        
     </application>
 
 </manifest>

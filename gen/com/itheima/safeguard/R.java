@@ -1196,7 +1196,7 @@ containing a value of this type.
         public static final int radio=0x7f07002f;
         public static final int rl_lostfind_root=0x7f07003d;
         public static final int rl_splash_root=0x7f07004a;
-        public static final int sciv_settingcenter_intercept=0x7f070044;
+        public static final int sciv_settingcenter_blackNum=0x7f070044;
         public static final int sciv_settringcenter_autoupdate=0x7f070043;
         public static final int search_badge=0x7f070032;
         public static final int search_bar=0x7f070031;

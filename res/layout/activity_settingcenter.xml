@@ -18,7 +18,7 @@
     </com.itheima.safeguard.view.SettingCenterItemView>
 
     <com.itheima.safeguard.view.SettingCenterItemView
-        android:id="@+id/sciv_settingcenter_intercept"
+        android:id="@+id/sciv_settingcenter_blackNum"
         itheima:mytitle="黑名单拦截"
         itheima:mycontent="拦截已关闭#拦截已开启"
         android:layout_width="fill_parent"
