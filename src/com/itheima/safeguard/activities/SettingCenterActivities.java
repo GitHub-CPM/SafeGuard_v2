@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.itheima.safeguard.R;
 import com.itheima.safeguard.service.BlackNumberService;
+import com.itheima.safeguard.service.ComingPhoneService;
 import com.itheima.safeguard.utils.MyConstants;
 import com.itheima.safeguard.utils.SPTools;
 import com.itheima.safeguard.utils.ServiceUtils;
@@ -18,6 +19,7 @@ public class SettingCenterActivities extends Activity {
 
 	private SettingCenterItemView sciv_autoupdate; // 自动更新的条目
 	private SettingCenterItemView sciv_blackNum; // 黑名单拦截服务
+	private SettingCenterItemView sciv_phonelocation;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +37,38 @@ public class SettingCenterActivities extends Activity {
 		sciv_blackNum.setIsCheck(ServiceUtils.isRunningService(
 				SettingCenterActivities.this,
 				"com.itheima.safeguard.service.BlackNumberService"));
+		sciv_phonelocation.setIsCheck(ServiceUtils.isRunningService(
+				getApplicationContext(),
+				"com.itheima.safeguard.service.ComingPhoneService"));
 	}
 
 	/**
 	 * 监听条目是否被触发
 	 */
 	private void initEvent() {
-		// 监听自动更新的条目选项是否被勾上
-		sciv_autoupdate.setItemClickListener(new OnClickListener() {
+		sciv_phonelocation.setItemClickListener(new OnClickListener() {
+			// 监测来电区域显示功能是否被点击
+			@Override
+			public void onClick(View v) {
+				boolean b = ServiceUtils.isRunningService(
+						getApplicationContext(),
+						"com.itheima.safeguard.service.ComingPhoneService");
+				if (b) {
+					Intent phoneLocation = new Intent(getApplicationContext(),
+							ComingPhoneService.class);
+					stopService(phoneLocation);
+					sciv_phonelocation.setIsCheck(!b);
+				} else {
+					Intent phoneLocation = new Intent(getApplicationContext(),
+							ComingPhoneService.class);
+					startService(phoneLocation);
+					sciv_phonelocation.setIsCheck(!b);
+				}
+			}
+		});
 
+		sciv_autoupdate.setItemClickListener(new OnClickListener() {
+			// 监听自动更新的条目选项是否被点击
 			@Override
 			public void onClick(View v) {
 				// 如果被点击,则改变该选项的状态,根据复选框是否被勾上判断
@@ -60,13 +85,14 @@ public class SettingCenterActivities extends Activity {
 		});
 
 		sciv_blackNum.setItemClickListener(new OnClickListener() {
-
+			// 监听黑名单拦截服务是否被点击
 			@Override
 			public void onClick(View v) {
 				// 监听黑名单拦截服务的开启与否
-				boolean isRunning = ServiceUtils.isRunningService(SettingCenterActivities.this,
+				boolean isRunning = ServiceUtils.isRunningService(
+						SettingCenterActivities.this,
 						"com.itheima.safeguard.service.BlackNumberService");
-				if (isRunning) {//运行,则关闭服务
+				if (isRunning) {// 运行,则关闭服务
 					Intent blackNumber = new Intent(
 							SettingCenterActivities.this,
 							BlackNumberService.class);
@@ -108,6 +134,7 @@ public class SettingCenterActivities extends Activity {
 		setContentView(R.layout.activity_settingcenter);
 		sciv_autoupdate = (SettingCenterItemView) findViewById(R.id.sciv_settringcenter_autoupdate);
 		sciv_blackNum = (SettingCenterItemView) findViewById(R.id.sciv_settingcenter_blackNum);
+		sciv_phonelocation = (SettingCenterItemView) findViewById(R.id.sciv_settingcenter_phonelocation);
 	}
 
 }

@@ -25,4 +25,12 @@
         android:layout_height="wrap_content" >
     </com.itheima.safeguard.view.SettingCenterItemView>
 
+    <com.itheima.safeguard.view.SettingCenterItemView
+        android:id="@+id/sciv_settingcenter_phonelocation"
+        itheima:mytitle="来电区域显示"
+        itheima:mycontent="来电区域显示已关闭#来电区域显示已开启"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    </com.itheima.safeguard.view.SettingCenterItemView>
+
 </LinearLayout>
