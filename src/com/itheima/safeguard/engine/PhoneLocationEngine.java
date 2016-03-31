@@ -3,6 +3,7 @@ package com.itheima.safeguard.engine;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -20,16 +21,21 @@ public class PhoneLocationEngine {
 	 *            要查询的号码
 	 * @return 电话号码归属地
 	 */
-	public String queryLocation(String phoneNum) {
-		// 默认为本号码
+	public String queryLocation(String phoneNum,Context context) {
 		String location = phoneNum;
-		// 根据各个电话号码性质区分
-		if (phoneNum.length() == 11 && phoneNum.startsWith("1")) { // 手机号码
-			location = queryMobil(phoneNum);
-		} else if ((phoneNum.length() == 11 || phoneNum.length() == 12)
-				&& phoneNum.startsWith("0")) { // 固定电话
-			location = queryTel(phoneNum);
-		} else { // 服务电话
+		Pattern p = Pattern.compile("1{1}[3857]{1}[0-9]{9}");
+		Matcher m = p.matcher(phoneNum);
+		boolean b = m.matches();
+		if (b) {
+			// 是手机号
+			location = queryMobil(phoneNum, context);
+		} else if (phoneNum.length() >= 11) {
+			// 固定号码
+			// 如果是固定号码
+			location = queryTel(phoneNum, context);
+		} else {
+
+			// 如果是服务号码
 			location = queryServiceTel(phoneNum);
 		}
 		return location;
@@ -42,7 +48,7 @@ public class PhoneLocationEngine {
 	 *            手机号码
 	 * @return 返回该手机号码的归属地
 	 */
-	public String queryMobil(String phoneNum) {
+	public String queryMobil(String phoneNum,Context context) {
 		String location = phoneNum;
 		Pattern p = Pattern.compile("(1){1}(34568){1}(123456789){9}");
 		Matcher m = p.matcher(phoneNum);
@@ -56,7 +62,7 @@ public class PhoneLocationEngine {
 				SQLiteDatabase.OPEN_READONLY);
 		Cursor cursor = database
 				.rawQuery(
-						"select location from data2 where id = 'select outkey from data1 where id = ?'",
+						"select location from data2 where id = (select outKey from data1 where id=?)",
 						new String[] { phoneNum });
 		if (cursor.moveToNext()) {
 			location = cursor.getString(0);
@@ -71,19 +77,21 @@ public class PhoneLocationEngine {
 	 *            固定电话
 	 * @return 返回该固定电话的归属地
 	 */
-	public String queryTel(String phoneNum) {
+	public String queryTel(String phoneNum,Context context) {
 		String location = phoneNum;
 		String quHao = "000000000";
-		if (phoneNum.charAt(1) == 1 || phoneNum.charAt(1) == 2) {
+		if (phoneNum.charAt(1) == '1' || phoneNum.charAt(1) == '2') {
+			// 2位区号
 			quHao = phoneNum.substring(1, 3);
 		} else {
+			// 3位区号
 			quHao = phoneNum.substring(1, 4);
 		}
 		SQLiteDatabase database = SQLiteDatabase.openDatabase(
 				"/data/data/com.itheima.safeguard/files/address.db", null,
 				SQLiteDatabase.OPEN_READONLY);
 		Cursor cursor = database.rawQuery(
-				"select location from data2 where area = ?",
+				"select location from data2 where area=?",
 				new String[] { quHao });
 		if (cursor.moveToNext()) {
 			location = cursor.getString(0);
