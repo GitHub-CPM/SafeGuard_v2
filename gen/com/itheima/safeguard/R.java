@@ -1176,6 +1176,7 @@ containing a value of this type.
         public static final int icon=0x7f07002a;
         public static final int ifRoom=0x7f07000a;
         public static final int image=0x7f070027;
+        public static final int iv_comingphone_toast_img=0x7f070072;
         public static final int iv_item_home_gv_icon=0x7f070066;
         public static final int iv_item_telsms_lajitong=0x7f07006d;
         public static final int iv_lostfind_lock=0x7f07003f;
@@ -1220,6 +1221,7 @@ containing a value of this type.
         public static final int tabMode=0x7f070002;
         public static final int title=0x7f07002b;
         public static final int top_action_bar=0x7f070020;
+        public static final int tv_comingphone_toast_location=0x7f070073;
         public static final int tv_item_friends_name=0x7f070064;
         public static final int tv_item_friends_phonenum=0x7f070065;
         public static final int tv_item_home_gv_name=0x7f070067;
@@ -1310,6 +1312,7 @@ containing a value of this type.
         public static final int item_telsms_listview_black=0x7f03002a;
         public static final int popup_telsms=0x7f03002b;
         public static final int support_simple_spinner_dropdown_item=0x7f03002c;
+        public static final int toast_comingphone=0x7f03002d;
     }
     public static final class menu {
         public static final int lostfind=0x7f0e0000;
