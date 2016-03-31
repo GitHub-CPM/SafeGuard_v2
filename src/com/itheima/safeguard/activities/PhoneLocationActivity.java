@@ -95,7 +95,7 @@ public class PhoneLocationActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		String location = phoneLocationEngine.queryLocation(phoneNum,getApplicationContext());
+		String location = phoneLocationEngine.locationQuery(phoneNum,getApplicationContext());
 		tv_location.setText(location);
 	}
 	
