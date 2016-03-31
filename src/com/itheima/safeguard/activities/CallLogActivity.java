@@ -8,13 +8,13 @@ import com.itheima.safeguard.engine.ReadContactsEngine;
 /**
  * @author CPM
  *
- *		从联系人导入的界面
+ *		通信记录的界面
  */
-public class FriendsActivity extends BaseTelSmsBlackActivity {
+public class CallLogActivity extends BaseTelSmsBlackActivity {
 
 	@Override
 	public List<ContactsBean> readData() {
-		return ReadContactsEngine.readContacts(getApplicationContext());
+		return ReadContactsEngine.readPhoneLog(getApplicationContext());
 	}
 
 

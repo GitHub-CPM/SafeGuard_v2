@@ -17,6 +17,51 @@ import com.itheima.safeguard.domain.ContactsBean;
 public class ReadContactsEngine {
 
 	/**
+	 * 查询短信的记录
+	 * 
+	 * @param context
+	 * @return 返回短信联系记录的list
+	 */
+	public static List<ContactsBean> readSmslog(Context context) {
+		// 创建一个arraylist,用于封装联系人实例对象
+		List<ContactsBean> list = new ArrayList<>();
+
+		Uri uri = Uri.parse("content://sms");
+		Cursor cursor = context.getContentResolver().query(uri, new String[]{"address","person"}, null, null, " _id desc");
+		while (cursor.moveToNext()) {
+			ContactsBean bean = new ContactsBean();
+			String phoneNumber = cursor.getString(0);
+			String name = cursor.getString(1);
+			bean.setName(name);
+			bean.setPhoneNum(phoneNumber);
+			list.add(bean);
+		}
+		cursor.close();
+		return list; // 返回一个列表
+	}
+	
+	/**从通话记录查找,返回值
+	 * @param context
+	 * @return
+	 */
+	public static List<ContactsBean> readPhoneLog(Context context) {
+		List<ContactsBean> list = new ArrayList<>();
+		// 通过内容提供者获得手机通话记录
+		Uri uri = Uri.parse("content://call_log/calls");
+		Cursor cursor = context.getContentResolver().query(uri,new String[]{"name","number"}, null, null, " _id desc");
+		while (cursor.moveToNext()) {
+			ContactsBean bean = new ContactsBean();
+			bean.setName(cursor.getString(0));
+			bean.setPhoneNum(cursor.getString(1));
+			list.add(bean);
+		}
+		cursor.close();
+		return list;
+	}
+	
+	
+
+	/**
 	 * 静态方法,通过手机联系人的内容提供者读取手机联系人的信息,返回一个list,里面封装了各个联系人的实例
 	 * 
 	 * @param context

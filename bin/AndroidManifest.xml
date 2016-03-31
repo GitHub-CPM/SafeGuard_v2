@@ -56,6 +56,10 @@
         </activity>
         <activity android:name="com.itheima.safeguard.activities.TelSmsActivity" >
         </activity>
+        <activity android:name="com.itheima.safeguard.activities.CallLogActivity" >
+        </activity>
+        <activity android:name="com.itheima.safeguard.activities.SmsLogActivity" >
+        </activity>
 
         <service android:name="com.itheima.safeguard.service.LostFindService" >
         </service>

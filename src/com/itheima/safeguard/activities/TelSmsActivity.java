@@ -7,6 +7,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import com.itheima.safeguard.R;
 import com.itheima.safeguard.dao.BlackDao;
 import com.itheima.safeguard.domain.BlackBean;
 import com.itheima.safeguard.domain.BlackTable;
+import com.itheima.safeguard.utils.MyConstants;
 
 /**
  * @author Administrator
@@ -69,7 +71,7 @@ public class TelSmsActivity extends Activity {
 		initView(); // 初始化界面
 		initData(); // 初始化数据
 		initEvent(); // 初始化事件
-//		initPopup(); // 初始化弹出窗口
+		// initPopup(); // 初始化弹出窗口
 	}
 
 	/**
@@ -80,28 +82,39 @@ public class TelSmsActivity extends Activity {
 		contentView = View.inflate(getApplicationContext(),
 				R.layout.popup_telsms, null);
 		// 获取控件的引用
-		tv_popup_self = (TextView) contentView.findViewById(R.id.tv_telsms_popup_self);
-		tv_popup_contracts = (TextView) contentView.findViewById(R.id.tv_telsms_popup_contracts);
-		tv_popup_call = (TextView) contentView.findViewById(R.id.tv_telsms_popup_call);
-		tv_popup_sms = (TextView) contentView.findViewById(R.id.tv_telsms_popup_sms);
-		
+		tv_popup_self = (TextView) contentView
+				.findViewById(R.id.tv_telsms_popup_self);
+		tv_popup_contracts = (TextView) contentView
+				.findViewById(R.id.tv_telsms_popup_contracts);
+		tv_popup_call = (TextView) contentView
+				.findViewById(R.id.tv_telsms_popup_call);
+		tv_popup_sms = (TextView) contentView
+				.findViewById(R.id.tv_telsms_popup_sms);
+
 		// 为四个点击统一设置一个点击监听事件,根据id判断是哪个文本点击的
 		View.OnClickListener listener = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				switch (v.getId()) {
 				case R.id.tv_telsms_popup_self: // 自己手动添加
-					Toast.makeText(getApplicationContext(), "自己手动添加", Toast.LENGTH_SHORT).show();
-					showAddBlackDialog(v);
+					Toast.makeText(getApplicationContext(), "自己手动添加",
+							Toast.LENGTH_SHORT).show();
+					showAddBlackDialog("");
 					break;
 				case R.id.tv_telsms_popup_contracts: // 从联系人添加
-					Toast.makeText(getApplicationContext(), "从联系人添加", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent(TelSmsActivity.this,
+							FriendsActivity.class);
+					startActivityForResult(intent, 1);
 					break;
 				case R.id.tv_telsms_popup_call: // 从通话记录添加
-					Toast.makeText(getApplicationContext(), "从通话记录添加", Toast.LENGTH_SHORT).show();
+					Intent callLog = new Intent(TelSmsActivity.this,
+							CallLogActivity.class);
+					startActivityForResult(callLog, 1);
 					break;
 				case R.id.tv_telsms_popup_sms: // 从短信记录添加
-					Toast.makeText(getApplicationContext(), "从短信记录添加", Toast.LENGTH_SHORT).show();
+					Intent smsLog = new Intent(TelSmsActivity.this,
+							SmsLogActivity.class);
+					startActivityForResult(smsLog, 1);
 					break;
 				default:
 					break;
@@ -110,37 +123,45 @@ public class TelSmsActivity extends Activity {
 				closePouupWindow();
 			}
 		};
-		
+
 		// 为控件设置监听器
 		tv_popup_self.setOnClickListener(listener);
 		tv_popup_contracts.setOnClickListener(listener);
 		tv_popup_call.setOnClickListener(listener);
 		tv_popup_sms.setOnClickListener(listener);
-		
+
 		// 设置弹出窗口
-		pw = new PopupWindow(contentView,
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		//设置背景资源,不然显示不了
-		pw.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); 
+		pw = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT);
+		// 设置背景资源,不然显示不了
+		pw.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		// 设置动画
-		
+
 		sa = new ScaleAnimation(1.0F, 1.0F, 0.0F, 1.0F,
 				Animation.RELATIVE_TO_SELF, 0.5F, Animation.RELATIVE_TO_SELF,
 				0.0F);
 		sa.setDuration(1000);
-//		contentView.setAnimation(sa);
-		
+		// contentView.setAnimation(sa);
+
 		// 弹出窗口
 		showPopupWindow();
 	}
-	
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			String phoneNumber = data.getStringExtra(MyConstants.SAFENUMBER);
+			showAddBlackDialog(phoneNumber);
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
 	/**
 	 * 弹出自定义窗口
 	 */
 	private void showPopupWindow() {
-		if (pw != null && pw.isShowing()) {
+		if (pw != null & pw.isShowing()) {
 			pw.dismiss();
-			Toast.makeText(getApplicationContext(), "判断了.", Toast.LENGTH_SHORT).show();
 		} else {
 			// 开启动画
 			contentView.startAnimation(sa);
@@ -155,7 +176,6 @@ public class TelSmsActivity extends Activity {
 	private void closePouupWindow() {
 		if (pw != null && pw.isShowing()) {
 			pw.dismiss();
-			Toast.makeText(getApplicationContext(), "执行了.", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -269,7 +289,13 @@ public class TelSmsActivity extends Activity {
 
 		@Override
 		public int getCount() {
-			return blackList.size();
+			int size = blackList.size();
+			if (size == 0) {
+				tv_nodata.setVisibility(View.VISIBLE);
+				lv_black.setVisibility(View.GONE);
+				pb_loading.setVisibility(View.GONE);
+			}
+			return size;
 		}
 
 		@Override
@@ -337,8 +363,14 @@ public class TelSmsActivity extends Activity {
 									blackDao.delete(bean.getPhone());
 									// 删除容器中对应内容
 									blackList.remove(position);
-									// 更新界面
-									myAdapter.notifyDataSetChanged();
+
+									if (blackList.size() < quantityPerPage / 2 - 1
+											|| position == blackList.size()) {
+										initData();
+									} else {
+										// 更新界面
+										myAdapter.notifyDataSetChanged();
+									}
 								}
 							});
 					ab.setNegativeButton("点错了", null);
@@ -404,17 +436,19 @@ public class TelSmsActivity extends Activity {
 	 * @param view
 	 */
 	public void addBlack(View view) {
-//		showAddBlackDialog(view);
-//		showPopupWindow();
+		// showAddBlackDialog(view);
+		// showPopupWindow();
 		initPopup();
 	}
 
-	private void showAddBlackDialog(View view) {
+	private void showAddBlackDialog(String PhoneNumber) {
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		View dialogView = view.inflate(this, R.layout.dialog_telsms_addblack,
+		View dialogView = View.inflate(this, R.layout.dialog_telsms_addblack,
 				null);
 		final EditText et_dialog_phone = (EditText) dialogView
 				.findViewById(R.id.et_telsms_dialog_phone);
+		et_dialog_phone.setText(PhoneNumber); // 设置传过来的号码在输入框中
+
 		final CheckBox cb_dialog_sms = (CheckBox) dialogView
 				.findViewById(R.id.cb_telsms_dialog_smsmode);
 		final CheckBox cb_dialog_phone = (CheckBox) dialogView
@@ -474,6 +508,9 @@ public class TelSmsActivity extends Activity {
 				 * Toast.LENGTH_SHORT).show();
 				 */
 				dialog.dismiss();
+				lv_black.setVisibility(View.VISIBLE);
+				pb_loading.setVisibility(View.GONE);
+				tv_nodata.setVisibility(View.GONE);
 			}
 		});
 

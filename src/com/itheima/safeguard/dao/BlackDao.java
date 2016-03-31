@@ -38,7 +38,7 @@ public class BlackDao {
 		SQLiteDatabase database = db.getReadableDatabase();
 		Cursor cursor = database.rawQuery("select " + BlackTable.PHONE + ","
 				+ BlackTable.MODE + " from " + BlackTable.BLACKTABLE
-				+ " limit ?,? ", new String[] { startIndex + "",
+				+ " order by _id limit ?,? ", new String[] { startIndex + "",
 				quantityPerPage + "" });
 		// ±È¿˙”Œ±Í
 		while (cursor.moveToNext()) {
