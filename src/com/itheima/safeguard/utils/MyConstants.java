@@ -14,7 +14,9 @@ public interface MyConstants {
 	String SAFENUMBER = "safenumber"; // 安全号码
 	int SEED = 520; // 用以加密/解密的种子
 	String LOSTFIND = "lostfind"; // 是否开机开启手机防盗功能
-	String LOSTFINDNEWNAME = "lostfindnewname"; //修改了"手机防盗"的新名字
-	String AUTOUPDATE = "autoupdate"; //是否开启自动更新应用程序监测
+	String LOSTFINDNEWNAME = "lostfindnewname"; // 修改了"手机防盗"的新名字
+	String AUTOUPDATE = "autoupdate"; // 是否开启自动更新应用程序监测
+	String TOAST_X = "toastX";// 自定义吐司的x坐标
+	String TOAST_Y = "toastY";// 自定义吐司的y坐标
 
 }
