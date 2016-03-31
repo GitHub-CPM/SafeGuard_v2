@@ -13,6 +13,7 @@
         android:textSize="20sp" />
 
     <EditText
+        android:inputType="phone"
         android:id="@+id/et_phonelocation_phonenum"
         android:layout_width="fill_parent"
         android:layout_height="50dp"

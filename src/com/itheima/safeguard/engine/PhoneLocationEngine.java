@@ -26,7 +26,7 @@ public class PhoneLocationEngine {
 		// 根据各个电话号码性质区分
 		if (phoneNum.length() == 11 && phoneNum.startsWith("1")) { // 手机号码
 			location = queryMobil(phoneNum);
-		} else if ((phoneNum.length() == 11 || phoneNum.length() == 10)
+		} else if ((phoneNum.length() == 11 || phoneNum.length() == 12)
 				&& phoneNum.startsWith("0")) { // 固定电话
 			location = queryTel(phoneNum);
 		} else { // 服务电话
@@ -44,12 +44,13 @@ public class PhoneLocationEngine {
 	 */
 	public String queryMobil(String phoneNum) {
 		String location = phoneNum;
-		Pattern p = Pattern.compile("(1){1}(34568){1}(1-9){9}");
+		Pattern p = Pattern.compile("(1){1}(34568){1}(123456789){9}");
 		Matcher m = p.matcher(phoneNum);
 		boolean matches = m.matches();
 		if (!matches) {
 			return location;
 		}
+		phoneNum = phoneNum.substring(0, 7);
 		SQLiteDatabase database = SQLiteDatabase.openDatabase(
 				"/data/data/com.itheima.safeguard/files/address.db", null,
 				SQLiteDatabase.OPEN_READONLY);
