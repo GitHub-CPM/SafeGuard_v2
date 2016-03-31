@@ -1,5 +1,10 @@
 package com.itheima.safeguard.service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+
+import com.android.internal.telephony.ITelephony;
 import com.itheima.safeguard.dao.BlackDao;
 import com.itheima.safeguard.domain.BlackTable;
 import com.itheima.safeguard.domain.ContactsBean;
@@ -7,11 +12,18 @@ import com.itheima.safeguard.domain.ContactsBean;
 import android.R.integer;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
+import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
+import android.telephony.TelephonyManager;
 
 /**
  * @author CPM
@@ -21,6 +33,9 @@ import android.telephony.SmsMessage;
 public class BlackNumberService extends Service {
 
 	private SmsBroadcastReceiver smsBroadcastReceiver;
+	private TelephonyManager tm;
+	private PhoneStateListener listener;
+	private BlackDao blackDao;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -37,8 +52,6 @@ public class BlackNumberService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// 当接收到广播的时候
-			// 创建黑名单数据库业务类
-			BlackDao blackDao = new BlackDao(context);
 			// 从intent里获得数据数组
 			Object[] object = (Object[]) intent.getExtras().get("pdus");
 			// 遍历数组
@@ -60,6 +73,9 @@ public class BlackNumberService extends Service {
 
 	@Override
 	public void onCreate() {
+		// 创建黑名单数据库业务类
+		blackDao = new BlackDao(BlackNumberService.this);
+
 		// 开启服务,监听广播,动态注册广播
 		// 1.短信拦截
 		// 1)实例化广播接收者
@@ -73,8 +89,90 @@ public class BlackNumberService extends Service {
 		registerReceiver(smsBroadcastReceiver, smsIntentFilter);
 
 		// 2.电话拦截
+		// 获取手机管理者
+		tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+		// 创建手机状态监听者
+		listener = new PhoneStateListener() {
+
+			@Override
+			public void onCallStateChanged(int state, String incomingNumber) {
+				switch (state) {
+				case TelephonyManager.CALL_STATE_IDLE:// 空闲中
+					// 不做处理
+					break;
+				case TelephonyManager.CALL_STATE_OFFHOOK:// 通话中
+					// 不作处理
+					break;
+				case TelephonyManager.CALL_STATE_RINGING:// 响铃中
+					// 先判断是否为黑名单中的拦截
+					int mode = blackDao.getMode(incomingNumber);
+					if ((mode & BlackTable.TEL_MODE) != 0) {
+						// 拦截电话
+						abortPhone();
+						// 删除电话日志
+						deletCalllog(incomingNumber);
+					}
+
+					break;
+				default:
+					break;
+				}
+				super.onCallStateChanged(state, incomingNumber);
+			}
+
+		};
+		// 监听电话呼叫的状态
+		// 注册监听
+		tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 
 		super.onCreate();
+	}
+
+	/**
+	 * 删除该号码的通话记录
+	 * 
+	 * @param incomingNumber
+	 *            通话号码
+	 */
+	protected void deletCalllog(final String incomingNumber) {
+		// 根据内容提供者来判断电话日志是否已经生成
+		getContentResolver().registerContentObserver(
+				Uri.parse("content://call_log/calls"), true,
+				new ContentObserver(new Handler()) {
+					@Override
+					public void onChange(boolean selfChange) {
+						// 根据内容提供者的删除方法,删除来电记录
+						ContentResolver resolver = getContentResolver();
+						Uri uri = Uri.parse("content://call_log/calls");
+						resolver.delete(uri, "number =?",
+								new String[] { incomingNumber });
+						// 取消注册观察者
+						getContentResolver().unregisterContentObserver(this);
+						
+						super.onChange(selfChange);
+					}
+				});
+	}
+
+	/**
+	 * 拦截手机进入的方法
+	 */
+	protected void abortPhone() {
+		// 通过反射,获得系统挂断电话的方法
+		try {
+			Class<?> clazz = Class.forName("android.os.ServiceManager");
+			Method method = clazz.getDeclaredMethod("getService", String.class);
+			IBinder binder = (IBinder) method.invoke(null,
+					Context.TELEPHONY_SERVICE);
+			ITelephony iTelephony = ITelephony.Stub.asInterface(binder);
+			// 获得系统的endCall方法,挂断电话
+			iTelephony.endCall();
+		} catch (ClassNotFoundException | NoSuchMethodException
+				| IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -84,6 +182,8 @@ public class BlackNumberService extends Service {
 		unregisterReceiver(smsBroadcastReceiver);
 
 		// 2.关闭电话拦截
+		// 取消监听
+		tm.listen(listener, PhoneStateListener.LISTEN_NONE);
 
 		super.onDestroy();
 	}
