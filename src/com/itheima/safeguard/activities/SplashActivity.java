@@ -1,7 +1,9 @@
 package com.itheima.safeguard.activities;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -72,13 +75,49 @@ public class SplashActivity extends ActionBarActivity {
 		initView(); // 初始化界面
 		initData(); // 初始化数据,获得本app本身的版本信息
 		initAnimation(); // 初始化动画
-		
+
 		// 判断是否勾选了自动更新应用的服务
-		if(!SPTools.getBoolean(getApplicationContext(), MyConstants.AUTOUPDATE, false)) {
+		if (!SPTools.getBoolean(getApplicationContext(),
+				MyConstants.AUTOUPDATE, false)) {
 			checkVersion(); // 访问网络,检查app的版本,如果有最新的,则用以更新app
-		}else { // 直接进入主界面  
+		} else { // 直接进入主界面
 			loadMainActivity();
 		}
+
+		copyDB("address.db"); // 拷贝数据
+	}
+
+	/**
+	 * 号码归属地数据库到本地(本地是指:/data/data/包名/files)
+	 */
+	private void copyDB(final String fileName) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				File file = new File(
+						"/data/data/com.itheima.safeguard/files/" + fileName);
+				if (!file.exists()) { // 如果没有号码归属地数据库,那么就进行拷贝到本地
+					AssetManager assetManager = getAssets();
+					try {
+						InputStream is = assetManager.open(fileName);
+						FileOutputStream os = openFileOutput(fileName,
+								MODE_PRIVATE);
+						int len = 0;
+						byte[] buffer = new byte[1024 * 10];
+						while ((len = is.read(buffer)) != -1) {
+							os.write(buffer, 0, len);
+							os.flush();
+						}
+						is.close();
+						os.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+
 	}
 
 	/**
