@@ -82,6 +82,8 @@
         </activity>
         <activity android:name="com.itheima.safeguard.activities.AppManagerActivity" >
         </activity>
+        <activity android:name="com.itheima.safeguard.activities.TaskManagerActivity" >
+        </activity>
 
         <!-- 微信分享回调 -->
         <activity

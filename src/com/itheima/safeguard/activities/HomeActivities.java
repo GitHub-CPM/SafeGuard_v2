@@ -81,6 +81,11 @@ public class HomeActivities extends Activity {
 							AppManagerActivity.class);
 					startActivity(appmanager);
 					break;
+				case 3:// 进入进程管家
+					Intent taskManager = new Intent(HomeActivities.this,
+							TaskManagerActivity.class);
+					startActivity(taskManager);
+					break;
 				case 7://按钮7,进入高级工具界面
 					Intent atool = new Intent(HomeActivities.this,AToolActivity.class);
 					startActivity(atool);
