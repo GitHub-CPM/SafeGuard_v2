@@ -19,5 +19,6 @@ public interface MyConstants {
 	String TOAST_X = "toastX";// 自定义吐司的x坐标
 	String TOAST_Y = "toastY";// 自定义吐司的y坐标
 	String TOAST_STYLE = "toast_style"; //自定义吐司的样式
+	String SHOWSYSTEMPROGRESS = "showsystemprogress"; // 显示系统的进程
 
 }
