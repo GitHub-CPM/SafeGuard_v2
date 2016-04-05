@@ -38,6 +38,7 @@
     <!-- 蓝牙分享所需的权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <application
         android:allowBackup="true"
@@ -83,6 +84,8 @@
         <activity android:name="com.itheima.safeguard.activities.AppManagerActivity" >
         </activity>
         <activity android:name="com.itheima.safeguard.activities.TaskManagerActivity" >
+        </activity>
+        <activity android:name="com.itheima.safeguard.activities.TaskManagerSettingActivity" >
         </activity>
 
         <!-- 微信分享回调 -->
@@ -137,6 +140,8 @@
         <service android:name="com.itheima.safeguard.service.BlackNumberService" >
         </service>
         <service android:name="com.itheima.safeguard.service.ComingPhoneService" >
+        </service>
+        <service android:name="com.itheima.safeguard.service.TaskManagerSettingService" >
         </service>
 
         <receiver android:name="com.itheima.safeguard.receiver.BootReceiver" >
