@@ -1,5 +1,7 @@
 package com.itheima.safeguard.utils;
 
+import android.net.Uri;
+
 /**
  * @author CPM
  * 
@@ -22,4 +24,5 @@ public interface MyConstants {
 	String SHOWSYSTEMPROGRESS = "showsystemprogress"; // 显示系统的进程
 	String APPLOCKTABLENAME = "applocktb"; // 程序锁数据库的表名
 	String APPLOCKPACKNAME = "packname"; // 程序锁数据库的列名(包名)
+	Uri URI_APPLOCK = Uri.parse("content://itheima/applock");
 }
