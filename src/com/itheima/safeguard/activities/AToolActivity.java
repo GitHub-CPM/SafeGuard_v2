@@ -25,6 +25,14 @@ public class AToolActivity extends Activity {
 
 		initView(); // 初始化界面
 	}
+	
+	/**进入程序锁的界面
+	 * @param view
+	 */
+	public void lockApplication(View view) {
+		Intent appLock = new Intent(this,AppLockActivity.class);
+		startActivity(appLock);
+	}
 
 	/**
 	 * 初始化高级工具的界面

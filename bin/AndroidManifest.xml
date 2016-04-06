@@ -87,6 +87,8 @@
         </activity>
         <activity android:name="com.itheima.safeguard.activities.TaskManagerSettingActivity" >
         </activity>
+        <activity android:name="com.itheima.safeguard.activities.AppLockActivity" >
+        </activity>
 
         <!-- 微信分享回调 -->
         <activity
