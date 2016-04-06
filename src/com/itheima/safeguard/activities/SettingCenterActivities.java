@@ -1,5 +1,6 @@
 package com.itheima.safeguard.activities;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.itheima.safeguard.R;
 import com.itheima.safeguard.service.BlackNumberService;
 import com.itheima.safeguard.service.ComingPhoneService;
+import com.itheima.safeguard.service.WatchDogService;
 import com.itheima.safeguard.utils.MyConstants;
 import com.itheima.safeguard.utils.SPTools;
 import com.itheima.safeguard.utils.ServiceUtils;
@@ -30,6 +32,7 @@ public class SettingCenterActivities extends Activity {
 	private String[] styleName = { "卫士蓝", "金属灰", "苹果绿", "活力橙", "半透明" }; // 自定义吐司的背景样式
 	private int[] styleColor = { Color.BLUE, Color.GRAY, Color.GREEN,
 			Color.RED, Color.WHITE };
+	private SettingCenterItemView sciv_watchDog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +53,33 @@ public class SettingCenterActivities extends Activity {
 		sciv_phonelocation.setIsCheck(ServiceUtils.isRunningService(
 				getApplicationContext(),
 				"com.itheima.safeguard.service.ComingPhoneService"));
+		sciv_watchDog.setIsCheck(ServiceUtils.isRunningService(
+				getApplicationContext(),
+				"com.itheima.safeguard.service.WatchDogService"));
 	}
 
 	/**
 	 * 监听条目是否被触发
 	 */
 	private void initEvent() {
+		sciv_watchDog.setItemClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (ServiceUtils.isRunningService(getApplicationContext(),
+						"com.itheima.safeguard.service.WatchDogService")) {
+					Intent watchDog = new Intent(SettingCenterActivities.this,
+							WatchDogService.class);
+					stopService(watchDog);
+					sciv_watchDog.setIsCheck(false);
+				} else {
+					Intent watchDog = new Intent(SettingCenterActivities.this,
+							WatchDogService.class);
+					startService(watchDog);
+					sciv_watchDog.setIsCheck(true);
+				}
+			}
+		});
+
 		rl_btn.setOnClickListener(new OnClickListener() {
 			// 选择切换来电归属地弹出自定义吐司的背景样式
 			@Override
@@ -173,11 +197,17 @@ public class SettingCenterActivities extends Activity {
 		sciv_autoupdate = (SettingCenterItemView) findViewById(R.id.sciv_settringcenter_autoupdate);
 		sciv_blackNum = (SettingCenterItemView) findViewById(R.id.sciv_settingcenter_blackNum);
 		sciv_phonelocation = (SettingCenterItemView) findViewById(R.id.sciv_settingcenter_phonelocation);
+		sciv_watchDog = (SettingCenterItemView) findViewById(R.id.sciv_settingcenter_watchdog);
 
 		// 来电归属地背景样式
 		tv_style = (TextView) findViewById(R.id.tv_settingcenter_comingphonestyle_content);
 		rl_btn = (RelativeLayout) findViewById(R.id.rl_settingcenter_comingphonestyle_btn);
-		tv_style.setText(SPTools.getString(getApplicationContext(), MyConstants.TOAST_STYLE, "卫士蓝"));
+
+		// 取存进去的值
+		int index = Integer.parseInt(SPTools.getString(getApplicationContext(),
+				MyConstants.TOAST_STYLE, "0"));
+		tv_style.setText(styleName[index]);
+		tv_style.setTextColor(styleColor[index]);
 	}
 
 }

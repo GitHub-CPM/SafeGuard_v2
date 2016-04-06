@@ -145,6 +145,8 @@
         </service>
         <service android:name="com.itheima.safeguard.service.TaskManagerSettingService" >
         </service>
+        <service android:name="com.itheima.safeguard.service.WatchDogService" >
+        </service>
 
         <receiver android:name="com.itheima.safeguard.receiver.BootReceiver" >
             <intent-filter>
