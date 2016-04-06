@@ -18,7 +18,8 @@ public interface MyConstants {
 	String AUTOUPDATE = "autoupdate"; // 是否开启自动更新应用程序监测
 	String TOAST_X = "toastX";// 自定义吐司的x坐标
 	String TOAST_Y = "toastY";// 自定义吐司的y坐标
-	String TOAST_STYLE = "toast_style"; //自定义吐司的样式
+	String TOAST_STYLE = "toast_style"; // 自定义吐司的样式
 	String SHOWSYSTEMPROGRESS = "showsystemprogress"; // 显示系统的进程
-
+	String APPLOCKTABLENAME = "applocktb"; // 程序锁数据库的表名
+	String APPLOCKPACKNAME = "packname"; // 程序锁数据库的列名(包名)
 }
