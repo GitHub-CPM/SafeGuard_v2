@@ -1,6 +1,5 @@
 package com.itheima.safeguard.activities;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,8 +28,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -84,7 +81,8 @@ public class SplashActivity extends ActionBarActivity {
 			loadMainActivity();
 		}
 
-		copyDB("address.db"); // 拷贝数据
+		copyDB("address.db"); // 拷贝手机号码归属地数据
+		copyDB("antivirus.db"); // 拷贝病毒数据库数据
 	}
 
 	/**
@@ -97,9 +95,11 @@ public class SplashActivity extends ActionBarActivity {
 				File file = new File(
 						"/data/data/com.itheima.safeguard/files/" + fileName);
 				if (!file.exists()) { // 如果没有号码归属地数据库,那么就进行拷贝到本地
+					// 资产管理器
 					AssetManager assetManager = getAssets();
 					try {
 						InputStream is = assetManager.open(fileName);
+						// 私有数据库
 						FileOutputStream os = openFileOutput(fileName,
 								MODE_PRIVATE);
 						int len = 0;
@@ -111,13 +111,11 @@ public class SplashActivity extends ActionBarActivity {
 						is.close();
 						os.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
 		}).start();
-
 	}
 
 	/**

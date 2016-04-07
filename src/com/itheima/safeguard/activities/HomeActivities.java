@@ -91,8 +91,14 @@ public class HomeActivities extends Activity {
 							ConnectivityActivity.class);
 					startActivity(connectivity);
 					break;
-				case 7://按钮7,进入高级工具界面
-					Intent atool = new Intent(HomeActivities.this,AToolActivity.class);
+				case 5:// 进入病毒查杀
+					Intent antiVirus = new Intent(HomeActivities.this,
+							AntiVirusActivity.class);
+					startActivity(antiVirus);
+					break;
+				case 7:// 按钮7,进入高级工具界面
+					Intent atool = new Intent(HomeActivities.this,
+							AToolActivity.class);
 					startActivity(atool);
 					break;
 				case 8:// 按钮8,即设置中心
