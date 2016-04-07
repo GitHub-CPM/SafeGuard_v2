@@ -93,6 +93,8 @@
             android:name="com.itheima.safeguard.activities.WatchDogEnterActivity"
             android:launchMode="singleInstance" >
         </activity>
+        <activity android:name="com.itheima.safeguard.activities.ConnectivityActivity" >
+        </activity>
 
         <!-- 微信分享回调 -->
         <activity

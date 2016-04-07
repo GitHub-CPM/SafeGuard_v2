@@ -86,6 +86,11 @@ public class HomeActivities extends Activity {
 							TaskManagerActivity.class);
 					startActivity(taskManager);
 					break;
+				case 4:// 进入流量统计
+					Intent connectivity = new Intent(HomeActivities.this,
+							ConnectivityActivity.class);
+					startActivity(connectivity);
+					break;
 				case 7://按钮7,进入高级工具界面
 					Intent atool = new Intent(HomeActivities.this,AToolActivity.class);
 					startActivity(atool);
