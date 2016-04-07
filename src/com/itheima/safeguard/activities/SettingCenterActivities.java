@@ -26,13 +26,13 @@ public class SettingCenterActivities extends Activity {
 
 	private SettingCenterItemView sciv_autoupdate; // 自动更新的条目
 	private SettingCenterItemView sciv_blackNum; // 黑名单拦截服务
-	private SettingCenterItemView sciv_phonelocation;
+	private SettingCenterItemView sciv_phonelocation; // 手机归属地查询
+	private SettingCenterItemView sciv_watchDog; // 看门狗服务
 	private TextView tv_style;
 	private RelativeLayout rl_btn;
 	private String[] styleName = { "卫士蓝", "金属灰", "苹果绿", "活力橙", "半透明" }; // 自定义吐司的背景样式
 	private int[] styleColor = { Color.BLUE, Color.GRAY, Color.GREEN,
 			Color.RED, Color.WHITE };
-	private SettingCenterItemView sciv_watchDog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class SettingCenterActivities extends Activity {
 	 * 监听条目是否被触发
 	 */
 	private void initEvent() {
+		// 开启看门狗服务
 		sciv_watchDog.setItemClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
