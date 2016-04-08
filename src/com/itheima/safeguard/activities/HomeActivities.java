@@ -96,6 +96,11 @@ public class HomeActivities extends Activity {
 							AntiVirusActivity.class);
 					startActivity(antiVirus);
 					break;
+				case 6:// 进入缓存管理
+					Intent cache = new Intent(HomeActivities.this,
+							CacheManagerActivity.class);
+					startActivity(cache);
+					break;
 				case 7:// 按钮7,进入高级工具界面
 					Intent atool = new Intent(HomeActivities.this,
 							AToolActivity.class);

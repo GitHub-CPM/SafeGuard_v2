@@ -39,6 +39,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE"/>
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
 
     <application
         android:allowBackup="true"
@@ -96,6 +98,8 @@
         <activity android:name="com.itheima.safeguard.activities.ConnectivityActivity" >
         </activity>
         <activity android:name="com.itheima.safeguard.activities.AntiVirusActivity" >
+        </activity>
+        <activity android:name="com.itheima.safeguard.activities.CacheManagerActivity" >
         </activity>
 
         <!-- 微信分享回调 -->
