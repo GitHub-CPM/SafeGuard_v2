@@ -25,4 +25,5 @@ public interface MyConstants {
 	String APPLOCKTABLENAME = "applocktb"; // 程序锁数据库的表名
 	String APPLOCKPACKNAME = "packname"; // 程序锁数据库的列名(包名)
 	Uri URI_APPLOCK = Uri.parse("content://itheima/applock");
+	String UPDATE_VIRUS_DATA_URL = "http:10.0.2.2/8080/safeguard/virusdbversion";
 }
